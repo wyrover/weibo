@@ -1,0 +1,197 @@
+<div class="profile-content section-nude">
+    <div class="container" ng-controller="userCtrl">
+
+        <div class="profile-tabs">
+            <div class="row">
+                <div class="col-lg-6 col-md-offset-2">
+                    <textarea class="form-control" rows="4" ng-model="contents.mainPost"></textarea>
+                    <ul class="nav nav-tabs">
+                        <br>
+                        <li>
+                            <button class="btn btn-sm">图片</button>
+                        </li>
+                        <li>
+                            <button class="btn btn-sm">视频</button>
+                        </li>
+                        <li>
+                            <button class="btn btn-sm">音乐</button>
+                        </li>
+                        <li class="col-md-offset-6">
+                            <button class="btn btn-sm" ng-click="publishPost()">发布 + </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                                <li><a>&nbsp;&nbsp;关注&nbsp;&nbsp;</a>
+
+                                    <p>11</p></li>
+                                <li><a>&nbsp;&nbsp;粉丝&nbsp;&nbsp;</a>
+
+                                    <p>36</p></li>
+                                <li><a>&nbsp;&nbsp;微博&nbsp;&nbsp;</a>
+
+                                    <p>79</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-md-offset-2">
+                    <hr>
+                    <ul class="list-unstyled">
+                        <!--{{feeds}}-->
+                        <li ng-repeat="feed in feeds">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-0 col-xs-3 col-xs-offset-2">
+                                    <!--<div tooltips tooltip-title="{{feed.author}}"-->
+                                         <!--tooltip-view="views/tooltip.idCard.html"-->
+                                         <!--tooltip-side="left"-->
+                                         <!--tooltip-view-ctrl="userCtrl"-->
+                                         <!--tooltip-show-trigger="mouseover click"-->
+                                         <!--tooltip-hide-trigger="click"-->
+                                         <!--tooltip-hide-target="both">-->
+                                    <img src="../images/examples/flume.jpg" alt="Circle Image"
+                                              class="img-circle img-no-padding img-responsive">
+                                    <!--</div>-->
+
+                                </div>
+                                <div class="col-md-10 col-xs-4">
+                                    <h5>
+                                        <div>
+                                            {{feed.author}}
+                                            <a class="btn btn-sm" ng-if="showFollowButton(feed.author)" ng-click="follow(feed.author)">关注</a>
+                                            <a class="btn btn-sm" ng-if="showUnFollowButton(feed.author)" ng-click="unFollow(feed.author)">取消关注</a>
+                                        </div>
+                                        <small>&nbsp;{{feed.createDate}}</small>
+                                    </h5>
+                                    <p>{{feed.content}}</p>
+
+                                    <!-- here is the first post-->
+                                    <div>
+                                        <hr>
+                                        <small>@陈佩斯<br>
+                                            <small>1小时前</small>
+                                            <p>
+
+                                                <small>我想死你们啦!!!!!!!!!
+                                                    <!--<a tooltips tooltip-title="怎么回事?" tooltip-view="views/tooltip.idCard.html" tooltip-side="bottom">Tooltip me</a>-->
+                                                    <!--<a tooltips tooltip-title="tip" tooltip-side="top">Tooltip me</a>-->
+                                                </small>
+                                            </p>
+
+
+
+                                            <!-- post footer -->
+                                            <ul class="list-inline text-right">
+                                                <li>
+                                                    <small>评论</small>
+                                                </li>
+                                                <li>
+                                                    <small>赞</small>
+                                                </li>
+                                            </ul>
+                                        </small>
+                                        <hr>
+                                    </div>
+
+                                    <div>
+                                        <div class="col-md-4">
+                                            <a class="btn btn-sm" ng-click="repost()"><small>转发</small></a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a class="btn btn-sm" ng-click="pullComments(feed._id)"><small>评论 {{feed.comments.length}}</small></a>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-sm" ng-click="upPost(feed._id)"><small>赞 {{feed.ups.length}}</small></a>
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="showComments(feed._id)">
+                                        <br>
+                                        <br>
+
+                                        <div class="col-md-10">
+                                            <textarea class="form-control" rows="1" ng-model="contents[feed._id]"></textarea>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-sm" ng-click="publishComment(feed._id)">回复他</button>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <hr>
+
+
+                                        <!--<div>-->
+                                            <!--<div ng-repeat="comment in feed.comments">-->
+                                                <!--<small>@{{comment.author}}: {{comment.content}}</small>-->
+                                                <!--<hr>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <div ng-repeat="comment in feed.comments">
+                                            <small class="col-lg-12">
+                                                @{{comment.author}}: {{comment.content}}
+                                            </small>
+                                            <small class="col-lg-10">
+                                                {{comment.createDate}}
+                                            </small>
+                                            <a class="col-lg-2" ng-click="pullComments(comment._id)">
+                                                <small>回复</small>
+                                            </a>
+
+                                            <div ng-if="showComments(comment._id)">
+                                                <hr class="col-lg-11">
+                                                <div class="col-md-2">
+                                                    <a ng-click="replyComment(feed._id, comment._id)"><small>回复Ta</small></a>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <textarea class="form-control" rows="1" ng-model="contents[comment._id]"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <hr class="col-lg-11">
+                                        </div>
+                                    </div>
+
+                                    <!-- comments view -->
+
+                                </div>
+                            </div>
+                            <hr>
+                        </li>
+                        <!--<hr/>-->
+                        <!--<li>-->
+                        <!--<div class="row">-->
+                        <!--<div class="col-md-2 col-md-offset-0 col-xs-3 col-xs-offset-2">-->
+                        <!--<img src="../images/examples/banks.jpg" alt="Circle Image"-->
+                        <!--class="img-circle img-no-padding img-responsive">-->
+                        <!--</div>-->
+                        <!--<div class="col-md-7 col-xs-4">-->
+                        <!--<h6>叫我美逼<br>-->
+                        <!--<small>今天 04:32</small>-->
+                        <!--</h6>-->
+                        <!--<p>是谁的眼神锁定我</p>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-3 col-xs-2">-->
+                        <!--<div class="unfollow" rel="tooltip" title="Unfollow">-->
+                        <!--<label class="checkbox" for="checkbox1">-->
+                        <!--<input type="checkbox" value="" id="checkbox1"-->
+                        <!--data-toggle="checkbox" checked>-->
+                        <!--</label>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</li>-->
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

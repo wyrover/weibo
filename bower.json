@@ -1,0 +1,28 @@
+{
+  "name": "weibo",
+  "version": "0.0.0",
+  "homepage": "https://github.com/TinkGu/weibo",
+  "authors": [
+    "TinkGu <tlwrite@126.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.6",
+    "angular-bootstrap": "~0.13.4",
+    "angular-tooltips": "~0.1.23",
+    "angular-ui-router": "~0.2.15",
+    "angular-ui-router-styles": "~0.0.6",
+    "font-awesome": "~4.4.0",
+    "moment": "~2.10.6",
+    "ng-flow": "~2",
+    "ngstorage": "~0.3.9"
+  }
+}

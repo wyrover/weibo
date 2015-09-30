@@ -1,0 +1,8 @@
+#register-navbar a{
+    color: #FFF;
+}
+
+.navbar-relative{
+    position: relative;
+    z-index: 2;
+}
