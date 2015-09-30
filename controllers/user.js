@@ -25,51 +25,18 @@ exports.signIn = async(function(req, res){
         delete user.password;
 
         var userRole = await(RoleModel.findOne({type: result.role}).exec());
-        if(!userRole){
-            return
-        }
+        errHandler.handleNotFound(userRole);
+        result.permissions = userRole.permissions;
+        result.token = jwt.sign(result, config.tokenSecret, {expiresInMinutes: config.tokenExpires});
+    }catch(err){
+        errHandler.handleDbErr();
     }
-    UserModel.findOne({name: username, password: password}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-
-        var result = doc.toObject();
-        delete result.password;
-
-        RoleModel.findOne({type: result.role}, function(err, docx){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            if(!docx){
-                return res.json({
-                    errLog: constant.errLog.DbNotFound
-                });
-            }
-
-            result.permissions = docx.permissions;
-            result.token = jwt.sign(result, config.tokenSecret, {expiresInMinutes: config.tokenExpires});
-            return res.json({
-                data: result
-            });
-        });
-
-
-    });
 })
 
+
+exports.signUp = function(req, res){
+
+}
 exports.signUp = function(req, res){
     var username = reqParser.parseProp(req, 'username');
     var password = reqParser.parseProp(req, 'password');

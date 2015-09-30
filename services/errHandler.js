@@ -5,6 +5,11 @@
 var constant = require('../constant');
 
 module.exports = {
+    handleDbErr: function(res){
+        return res.json({
+            errLog: constant.errLog.DbErr
+        })
+    },
     handleNotFound: function(doc){
         if(!doc){
             return res.json({
