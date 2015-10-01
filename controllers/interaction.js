@@ -2,17 +2,61 @@
  * Created by Tink on 2015/9/20.
  */
 
-var UserModel = require('../models').user;
-//var async = require('asyncawait').async;
-//var await = require('asyncawait').await;
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
 var reqParser = require('../services/reqParser');
 var errHandler = require('../services/errHandler');
 var userService = require('../services/user');
 var constant = require('../constant');
+var UserModel = require('../models').user;
 
+var alreadyInFollowingList = function(user, followingName){
+    return user.followings.some(function(f){
+        return f == followingName;
+    })
+}
 
+var alreadyInFanList = function(user, followerName){
+    return user.followers.some(function(f){
+        return f == followerName
+    })
+}
 
-exports.follow = function(req, res){
+var handleAlreadyHasThisFollowing = function(user, followingName, res){
+    if(alreadyInFollowingList(user, followingName)){
+        return res.json({
+            errLog: constant.errLog.AlreadyExists
+        })
+    }
+}
+
+var handleAlreadyHasThisFan = function(user, followerName, res){
+    if(alreadyInFanList(user, followerName)){
+        return res.json({
+            errLog: constant.errLog.AlreadyExists
+        })
+    }
+}
+
+var getIndexOrHandleNotFound = function(arr, rhs, index, res){
+    var hasIt = false;
+    for(var i = 0; i < arr.length; i++){
+        if(arr[i] == rhs){
+            hasIt = true;
+            index = i;
+            break;
+        }
+    }
+    if(!hasIt){
+        return res.json({
+            errLog: constant.errLog.DbNotFound
+        })
+    }
+}
+
+//                 fo & unfo
+//------------------------------------------------
+exports.follow = async(function(req, res){
     var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var followingName = reqParser.parseProp(req, 'followingName');
@@ -20,26 +64,11 @@ exports.follow = function(req, res){
     try{
         var user = userService.getUserByIdOrName(userId, username);
         errHandler.handleNotFound(user, res);
-
-
-        if(user.followings.some(function(f){
-            return f == followingName;
-        })){
-            return res.json({
-                errLog: constant.errLog.AlreadyExists
-            })
-        }
+        handleAlreadyHasThisFollowing(user, followingName, res);
 
         var following = await(UserModel.findOne({name: followingName}).exec());
         errHandler.handleNotFound(following, res);
-
-        if(following.followers.some(function(f){
-                return f == user.name
-        })){
-            return res.json({
-                errLog: constant.errLog.AlreadyExists
-            })
-        }
+        handleAlreadyHasThisFan(following, user.name, res);
 
         user.followings.push(followingName);
         following.followers.push(user.name);
@@ -54,192 +83,71 @@ exports.follow = function(req, res){
     }catch(err){
         errHandler.handleDbErr(res);
     }
-}
+})
 
 
-exports.unFollow = function (req, res) {
+exports.unfollow = async(function (req, res) {
     var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var followingName = reqParser.parseProp(req, 'followingName');
 
 
     try{
-        var user = userService
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
+        var followingIndex;
+        getIndexOrHandleNotFound(user.followings, followingName, followingIndex, res);
+
+        var following = await(UserModel.findOne({name: followingName}).exec());
+        errHandler.handleNotFound(following, res);
+        var followerIndex;
+        getIndexOrHandleNotFound(following.followers, user.name, followerIndex, res);
+
+        user.followings.splice(followingIndex, 1);
+        await(user.save());
+        following.followers.splice(followerIndex, 1);
+        await(following.save());
+
+        return res.json({
+            data: user.followings
+        })
 
     }catch(err){
         errHandler.handleDbErr(res);
     }
+})
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
 
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisFollowing = false;
-        var followingIndex;
-        for(var i = 0; i < doc.followings.length; i++){
-            if(doc.followings[i] == followingName){
-                hasThisFollowing = true;
-                followingIndex = i;
-                break;
-            }
-        }
-
-        if(!hasThisFollowing){
-            console.log('Not have this following');
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            })
-        }
-
-        UserModel.findOne({name: followingName}, function(err, docx){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            if(!docx){
-                return res.json({
-                    errLog: constant.errLog.DbNotFound
-                });
-            }
-
-            var hasThisFollower = false;
-            var followerIndex;
-            for(var j = 0; j < docx.followers.length; j++){
-                if(docx.followers[j] == username){
-                    hasThisFollower = true;
-                    followerIndex = j;
-                    break;
-                }
-            }
-
-            if(!hasThisFollower){
-                return res.json({
-                    errLog: constant.errLog.ButItDoesntExist
-                });
-            }
-
-            doc.followings.splice(followingIndex, 1);
-            doc.save(function(err){
-                if(err){
-                    return res.json({
-                        errLog: constant.errLog.DbErr
-                    });
-                }
-
-                docx.followers.splice(followerIndex, 1);
-                docx.save(function(err){
-                    if(err){
-                        return res.json({
-                            errLog: constant.errLog.DbErr
-                        });
-                    }
-
-                    return res.json({
-                        data: doc.followings
-                    });
-                });
-            });
-        });
-    });
-}
-
-exports.deleteFollower = function(req, res){
+exports.deleteFollower = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
-    var followerName = reqParser.parseProp(req, 'followingName')
+    var followerName = reqParser.parseProp(req, 'followingName');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisFollower = false;
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
         var followerIndex;
-        for(var i = 0; i < doc.followers.length; i++){
-            if(doc.followers[i] == followerName){
-                hasThisFollower = true;
-                followerIndex = i;
-                break;
-            }
-        }
+        getIndexOrHandleNotFound(user.followers, followerName, followerIndex, res);
 
-        if(!hasThisFollower){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            })
-        }
+        var follower = await(UserModel.findOne({name: followerName}).exec());
+        errHandler.handleNotFound(follower, res);
+        var followingIndex;
+        getIndexOrHandleNotFound(follower.followings, user.name, followingIndex, res);
 
-        UserModel.findOne({name: followerName}, function(err, docx){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+        user.followers.splice(followerIndex, 1);
+        await(user.save());
+        follower.followings.splice(followerIndex, 1);
+        await(follower.save());
 
-            if(!docx){
-                return res.json({
-                    errLog: constant.errLog.DbNotFound
-                });
-            }
+        return res.json({
+            data: user.followers
+        })
 
-            var hasThisFollowing = false;
-            var followingIndex;
-            for(var j = 0; j < docx.followings.length; j++){
-                if(docx.followings[j] == username){
-                    hasThisFollowing = true;
-                    followingIndex = j;
-                    break;
-                }
-            }
 
-            if(!hasThisFollowing){
-                return res.json({
-                    errLog: constant.errLog.ButItDoesntExist
-                });
-            }
-
-            doc.followers.splice(followerIndex, 1);
-            doc.save(function(err){
-                if(err){
-                    return res.json({
-                        errLog: constant.errLog.DbErr
-                    });
-                }
-
-                docx.followings.splice(followingIndex, 1);
-                docx.save(function(err){
-                    if(err){
-                        return res.json({
-                            errLog: constant.errLog.DbErr
-                        });
-                    }
-
-                    return res.json({
-                        data: doc.followers
-                    });
-                });
-            });
-        });
-    });
-}
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
 
 

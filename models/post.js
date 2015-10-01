@@ -12,7 +12,7 @@ var Comment = new Schema({
     content     : String,
     //position    : String, // 评论楼层
     createDate  : {type: Date, default: Date.now},
-    ups         : [String],
+    ups         : [String], //name
     parent      : {type: String, default: ''}, // 跟评的原po
 });
 

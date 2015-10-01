@@ -2,228 +2,212 @@
  * Created by Tink on 2015/9/20.
  */
 
-var UserModel = require('../models').user;
-var reqParser = require('../services/reqParser');
-var constant = require('../constant');
 
-exports.publish = function(req, res){
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
+var reqParser = require('../services/reqParser');
+var errHandler = require('../services/errHandler');
+var userService = require('../services/user');
+var constant = require('../constant');
+var UserModel = require('../models').user;
+var PostModel = require('../models').post;
+
+
+var getIndexOrHandleNotFound = function(arr, rhs, index, res){
+    var hasIt = false;
+    for(var i = 0; i < arr.length; i++){
+        if(arr[i] == rhs){
+            hasIt = true;
+            index = i;
+            break;
+        }
+    }
+    if(!hasIt){
+        return res.json({
+            errLog: constant.errLog.DbNotFound
+        })
+    }
+}
+
+
+//                 post
+//------------------------------------------------
+exports.publish = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var post = reqParser.parseProp(req, 'post');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
 
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        doc.posts.push(post);
-        doc.save(function(err){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            console.log(doc);
-            return res.json({
-                data: doc.posts
-            });
-        });
-    });
-}
-
-exports.getAll = function(req, res){
-    var username = reqParser.parseProp(req, 'username');
-
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
+        post.author = user.name;
+        var newPost = await(PostModel.create(post));
+        user.posts.push(newPost._id);
+        await(user.save());
 
         return res.json({
-            data: doc.posts
+            data: {
+                posts: user.posts,
+                post: newPost
+            }
         })
-    });
-}
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-exports.deleteOne = function(req, res){
+exports.getOne = async(function(req, res){
+    var postId = reqParser.parseProp(req, 'postId');
+
+    try{
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
+
+        return res.json({
+            data: post
+        })
+
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
+
+exports.getOnesAll = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
+    var username = reqParser.parseProp(req, 'username');
+
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
+
+        var posts = [];
+        for(var i = 0; i < user.posts.length; i++){
+            var post = await(PostModel.findById(user.posts[i]).exec())
+            errHandler.handleNotFound(post, res);
+            posts.push(post);
+        }
+        return res.json({
+            data: posts
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
+
+//really deleted
+exports.deleteOne = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPost = false;
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
         var postIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                hasThisPost = true;
-                postIndex = i;
-                break;
-            }
-        }
+        getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
+        user.posts.splice(postIndex, 1);
+        await(user.save());
 
-        if(!hasThisPost){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
+        var post = await(PostModel.findByIdAndRemove(postId).exec());
+        errHandler.handleNotFound(post, res);
 
-        doc.posts.splice(postIndex, 1);
-        doc.save(function(err){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+        return res.json({
+            data: user.posts
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-            return res.json({
-                data: doc.posts
-            });
-        });
-    });
-}
-
-exports.up = function (req, res) {
+// not really deleted
+exports.deleteOneJustInUserPosts = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
-    var uper = reqParser.parseProp(req, 'uper');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPost = false;
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
         var postIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                hasThisPost = true;
-                postIndex = i;
-                var post = doc.posts[i];
-                for(var u = 0; u < post.ups.length; u++){
-                    if(post.ups[u] == uper){
-                        return res.json({
-                            errLog: constant.errLog.AlreadyExists
-                        });
-                    }
-                }
-                break;
-            }
-        }
+        getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
+        user.posts.splice(postIndex, 1);
+        await(user.save());
 
-        if(!hasThisPost){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
+        return res.json({
+            data: user.posts
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-        doc.posts[postIndex].ups.push(uper);
-        doc.save(function(err){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
 
-            return res.json({
-                data: doc.posts[postIndex].ups
-            });
-        });
-    });
-}
 
-exports.unUp = function(req, res){
+//                 up & unup
+//------------------------------------------------
+exports.up = async(function (req, res) {
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
     var uper = reqParser.parseProp(req, 'uper');
 
-    console.log(username);
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPostAndUper = false;
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
         var postIndex;
+        getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
+
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
+        if(post.ups.some(function(u){
+                return u == uper;
+        })){
+            return res.json({
+                errLog: constant.errLog.AlreadyExists
+            })
+        }else{
+            post.ups.push(uper);
+        }
+        await(post.save());
+
+        return res.json{
+            data: post
+        }
+
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
+
+exports.unup = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
+    var username = reqParser.parseProp(req, 'username');
+    var postId = reqParser.parseProp(req, 'postId');
+    var uper = reqParser.parseProp(req, 'uper');
+
+
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
+        var postIndex;
+        getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
+
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
         var uperIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                postIndex = i;
-                var post = doc.posts[i];
-                for(var u = 0; u < post.ups.length; u++){
-                    if(post.ups[u] == uper){
-                        hasThisPostAndUper = true;
-                        uperIndex = u;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        getIndexOrHandleNotFound(post.ups, uper, uperIndex, res);
 
-        if(!hasThisPostAndUper){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
+        post.ups.splice(uperIndex, 1);
+        await(post.save());
+        return res.json({
+            data: post
+        })
 
-        doc.posts[postIndex].ups.splice(uperIndex, 1);
-        doc.save(function(err){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            return res.json({
-                data: doc.posts[postIndex].ups
-            });
-        });
-    });
-
-}
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
 
 
