@@ -9,7 +9,6 @@ var reqParser = require('../services/reqParser');
 var errHandler = require('../services/errHandler');
 var userService = require('../services/user');
 var constant = require('../constant');
-var UserModel = require('../models').user;
 var PostModel = require('../models').post;
 
 
