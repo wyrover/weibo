@@ -3,87 +3,72 @@
  */
 
 var UserModel = require('../models').user;
+//var async = require('asyncawait').async;
+//var await = require('asyncawait').await;
 var reqParser = require('../services/reqParser');
+var errHandler = require('../services/errHandler');
+var userService = require('../services/user');
 var constant = require('../constant');
 
+
+
 exports.follow = function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var followingName = reqParser.parseProp(req, 'followingName');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
+
+
+        if(user.followings.some(function(f){
+            return f == followingName;
+        })){
             return res.json({
-                errLog: constant.errLog.DbErr
-            });
+                errLog: constant.errLog.AlreadyExists
+            })
         }
 
-        if(!doc){
+        var following = await(UserModel.findOne({name: followingName}).exec());
+        errHandler.handleNotFound(following, res);
+
+        if(following.followers.some(function(f){
+                return f == user.name
+        })){
             return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
+                errLog: constant.errLog.AlreadyExists
+            })
         }
 
-        for(var i = 0; i < doc.followings.length; i++){
-            if(doc.followings[i] == followingName){
-                return res.json({
-                    errLog: constant.errLog.AlreadyExists
-                });
-            }
-        }
+        user.followings.push(followingName);
+        following.followers.push(user.name);
 
-        UserModel.findOne({name: followingName}, function(err, docx){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+        await(user.save());
+        await(following.save());
 
-            if(!docx){
-                return res.json({
-                    errLog: constant.errLog.DbNotFound
-                });
-            }
+        return res.json({
+            data: user.followings
+        })
 
-            for(var j = 0; j < docx.followers.length; j++){
-                if(docx.followers[j] == username){
-                    return res.json({
-                        errLog: constant.errLog.AlreadyExists
-                    });
-                }
-            }
-
-            doc.followings.push(followingName);
-            doc.save(function(err){
-                if(err){
-                    return res.json({
-                        errLog: constant.errLog.DbErr
-                    });
-                }
-
-                docx.followers.push(username);
-                //var newFollowerNotification = {};
-                //newFollowerNotification.guest = username;
-                //newFollowerNotification.
-                docx.save(function(err){
-                    if(err){
-                        return res.json({
-                            errLog: constant.errLog.DbErr
-                        });
-                    }
-
-                    return res.json({
-                        data: doc.followings
-                    });
-                });
-            });
-        });
-    });
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
 }
 
 
 exports.unFollow = function (req, res) {
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var followingName = reqParser.parseProp(req, 'followingName');
+
+
+    try{
+        var user = userService
+
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
 
     UserModel.findOne({name: username}, function(err, doc){
         if(err){

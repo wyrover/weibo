@@ -10,10 +10,17 @@ module.exports = {
             errLog: constant.errLog.DbErr
         })
     },
-    handleNotFound: function(doc){
+    handleNotFound: function(doc, res){
         if(!doc){
             return res.json({
                 errLog: constant.errLog.DbNotFound
+            });
+        }
+    },
+    handleAlreadyExists: function(doc, res){
+        if(doc){
+            return res.json({
+                errLog: constant.errLog.AlreadyExists
             });
         }
     }

@@ -35,8 +35,5 @@ module.exports = {
         DbNotFound          : '数据未找到',
         AlreadyExists       : '数据已存在',
         ReqArgumentIsUnvalid: '请求参数有误'
-    },
-
-
-
+    }
 }
