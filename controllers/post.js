@@ -82,7 +82,7 @@ exports.getOnesAll = async(function(req, res){
 
         var posts = [];
         for(var i = 0; i < user.posts.length; i++){
-            var post = await(PostModel.findById(user.posts[i]).exec())
+            var post = await(PostModel.findById(user.posts[i]).exec());
             errHandler.handleNotFound(post, res);
             posts.push(post);
         }

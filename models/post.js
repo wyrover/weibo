@@ -22,7 +22,7 @@ var Post = new Schema({
     content     : String,
     pics        : [Buffer], // 图片
     createDate  : {type: Date, default: Date.now},
-    comments    : [String],
+    comments    : [Comment],
     ups         : [String],
     parent      : {type: String, default: ''}, // ԭ原po的用户名
 });

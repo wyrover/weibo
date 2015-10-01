@@ -2,45 +2,51 @@
  * Created by Tink on 2015/9/20.
  */
 
-var UserModel = require('../models').user;
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
 var reqParser = require('../services/reqParser');
+var errHandler = require('../services/errHandler');
+var userService = require('../services/user');
 var constant = require('../constant');
+var PostModel = require('../models').post;
+var UserModel = require('../models').user;
 
-exports.pull = function(req, res){
+exports.pull = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
 
-    UserModel.findOne({name: username} , function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
+    try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
 
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
+        //collect self
         var feeds = [];
-        feeds = feeds.concat(doc.posts);
-        if(doc.followings.length == 0){
-            return res.json({
-                data: feeds
-            });
+        for(var i = 0; i < user.posts.length; i++){
+            var post = await(PostModel.findById(user.posts[i]).exec());
+            errHandler.handleNotFound(post, res);
+
+            feeds.push(post);
         }
 
-        var followingsCount = 0;
-        for(var i = 0; i < doc.followings.length; i++){
-            UserModel.findOne({name: doc.followings[followingsCount]}, function(err, docx){
-                feeds = feeds.concat(docx.posts);
-                if(followingsCount+1 >= doc.followings.length){
-                    return res.json({
-                        data: feeds
-                    });
-                }
-                followingsCount++;
-            });
+        // collect followings
+        for(var j = 0; j < user.followings.length; j++){
+            var following = await(UserModel.findOne({name: user.followings[j]}).exec());
+            errHandler.handleNotFound(following, res);
+            for(var k = 0; k < user.posts.length; k++){
+                var followingPost = await(PostModel.findById(following.posts[k]).exec());
+                errHandler.handleNotFound(followingPost, res);
+                feeds.push(followingPost);
+            }
         }
-    });
-}
+
+        return res.json({
+            data: feeds
+        })
+
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
+
+// finally , the feeds structure looks like **feeds:[[], [], []].**
+// the first element of every array is the post, its parents following

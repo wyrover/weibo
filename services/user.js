@@ -2,12 +2,9 @@
  * Created by Tink on 2015/10/1.
  */
 
-//var async = require('asyncawait').async;
-//var await = require('asyncawait').await;
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
 var UserModel = require('../models').user;
-var RoleModel = require('../models').role;
-var reqParser = require('../services/reqParser');
-
 
 module.exports = {
     getUserByIdOrName: async(function(id, name){

@@ -2,215 +2,124 @@
  * Created by Tink on 2015/9/20.
  */
 
-var UserModel = require('../models').user;
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
+var utils = require('../services/utils');
 var reqParser = require('../services/reqParser');
+var errHandler = require('../services/errHandler');
+var userService = require('../services/user');
 var constant = require('../constant');
+var UserModel = require('../models').user;
+var PostModel = require('../models').post;
 
-exports.publish = function(req, res){
+exports.publish = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
+    var authorId = reqParser.parseProp(req, 'authorId');
+    var authorName = reqParser.parseProp(req, 'authorName');
     var comment = reqParser.parseProp(req, 'comment');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
+    try{
+        //var user = userService.getUserByIdOrName(userId, username);
+        //errHandler.handleNotFound(user, res);
+        //var postIndex;
+        //utils.getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
+        //todo notifications
 
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
 
-        var hasThisPost = false;
-        var postIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                hasThisPost = true;
-                postIndex = i;
-                break;
-            }
-        }
+        var author = userService.getUserByIdOrName(authorId, authorName);
+        errHandler.handleNotFound(author, res);
+        comment.author = author.name;
+        post.comments.push(comment);
+        await(post.save());
 
-        if(!hasThisPost){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
+        return res.json({
+            data: post
+        })
 
-        doc.posts[postIndex].comments.push(comment);
-        doc.save(function(err){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-            return res.json({
-                data: doc.posts[postIndex].comments
-            });
-        });
-    });
-}
-
-exports.getAll = function(req, res){
-    var username = reqParser.parseProp(req, 'username');
-    var postId = reqParser.parseProp(req, 'postId');
-
-    UserModel.findOne({name: username}, function(err, doc) {
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPost = false;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                hasThisPost = true;
-                return res.json({
-                    data: doc.posts[i].comments
-                });
-            }
-        }
-
-        if(!hasThisPost){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
-
-    });
-}
-
-exports.deleteOne = function(req,res){
+exports.deleteOne = async(function(req,res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
     var commentId = reqParser.parseProp(req, 'commentId');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
 
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPostAndThisComment = false;
-        var postIndex;
+    try{
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
         var commentIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                postIndex = i;
-                var post = doc.posts[i];
-                for(var j = 0; j < post.comments.length; j++){
-                    if(post.comments[j] == commentId){
-                        hasThisPostAndThisComment = true;
-                        commentIndex = j;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        utils.getIndexWithPropOrHandleNotFound(post.comments, '_id', commentId, commentIndex, res);
 
-        if(!hasThisPostAndThisComment){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
+        post.comments.splice(commentIndex, 1);
+        await(post.save());
 
-        doc.posts[postIndex].comments.splice(commentIndex, 1);
-        doc.save(function(err){
-            if (err) {
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+        return res.json({
+            data: post
+        })
 
-            return res.json({
-                data: doc.post[postIndex].comments
-            });
-        });
-    });
-}
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-exports.up = function(req, res){
+exports.up = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
+    var commentId = reqParser.parseProp(req, 'commentId');
     var uper = reqParser.parseProp(req, 'uper');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPostAndThisComment = false;
-        var postIndex;
+    try{
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
         var commentIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                postIndex = i;
-                var post = doc.posts[i];
-                for(var j = 0; j < post.comments.length; j++){
-                    if(post.comments[j] == commentId){
-                        hasThisPostAndThisComment = true;
-                        commentIndex = j;
-                        for(var u = 0; u < post.comments[j].ups.length; u++){
-                            if(post.comments[j].ups[u] == uper){
-                                return res.json({
-                                    errLog: constant.errLog.AlreadyExists
-                                });
-                            }
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        utils.getIndexWithPropOrHandleNotFound(post.comments, '_id', commentId, commentIndex, res);
 
-        if(!hasThisPostAndThisComment){
+        var ups = post.comments[commentIndex].ups;
+        if(ups.some(function(u){
+                return u == uper;
+            })){
             return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
+                errLog: constant.errLog.AlreadyExists
+            })
+        }else{
+            post.comments[commentIndex].ups.push(uper);
         }
+        await(post.save());
 
-        doc.posts[postIndex].comments[commentIndex].ups.push(uper);
-        doc.save(function(err){
-            if (err) {
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+        return res.json({
+            data: post.comments[commentIndex].ups
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-            return res.json({
-                data: doc.post[postIndex].comments[commentIndex].ups
-            });
-        });
-    });
-}
+
+
+
+
+// 写到这里
+
+
+
+
+
+
+
+
+
+
+
+
 
 exports.unUp = function(req, res){
     var username = reqParser.parseProp(req, 'username');
