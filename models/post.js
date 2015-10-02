@@ -36,7 +36,8 @@ var Notification = new Schema({
     resLink     : String,
     order       : Number, // 语序
     status      : {type: Number, default: constant.notificationStatus.New}, // 状态
-    createDate  : {type: Date, default: Date.now()}
+    createDate  : {type: Date, default: Date.now()},
+    content     : String
 
 })
 

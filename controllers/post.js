@@ -8,6 +8,7 @@ var await = require('asyncawait').await;
 var reqParser = require('../services/reqParser');
 var errHandler = require('../services/errHandler');
 var userService = require('../services/user');
+var postService = require('../services/post');
 var constant = require('../constant');
 var PostModel = require('../models').post;
 
@@ -62,9 +63,13 @@ exports.getOne = async(function(req, res){
     try{
         var post = await(PostModel.findById(postId).exec());
         errHandler.handleNotFound(post, res);
+        var parents = postService.getParents(post, res);
 
         return res.json({
-            data: post
+            data: {
+                post: post,
+                parents: parents
+            }
         })
 
     }catch(err){
@@ -84,7 +89,12 @@ exports.getOnesAll = async(function(req, res){
         for(var i = 0; i < user.posts.length; i++){
             var post = await(PostModel.findById(user.posts[i]).exec());
             errHandler.handleNotFound(post, res);
-            posts.push(post);
+            var parents = postService.getParents(post, res);
+            var feed = {
+                post: post,
+                parents: parents
+            }
+            posts.push(feed);
         }
         return res.json({
             data: posts
@@ -170,9 +180,9 @@ exports.up = async(function (req, res) {
         }
         await(post.save());
 
-        return res.json{
+        return res.json({
             data: post
-        }
+        })
 
     }catch(err){
         errHandler.handleDbErr(res);

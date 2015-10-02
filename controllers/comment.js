@@ -103,84 +103,30 @@ exports.up = async(function(req, res){
     }
 })
 
-
-
-
-
-// 写到这里
-
-
-
-
-
-
-
-
-
-
-
-
-
-exports.unUp = function(req, res){
+exports.unup = async(function(req, res){
+    var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
+    var commentId = reqParser.parseProp(req, 'commentId');
     var uper = reqParser.parseProp(req, 'uper');
 
-    UserModel.findOne({name: username}, function(err, doc){
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        var hasThisPostThisCommentAndThisUper = false;
-        var postIndex;
+    try{
+        var post = await(PostModel.findById(postId).exec());
+        errHandler.handleNotFound(post, res);
         var commentIndex;
+        utils.getIndexWithPropOrHandleNotFound(post.comments, '_id', commentId, commentIndex, res);
+
+        var ups = post.comments[commentIndex].ups;
         var uperIndex;
-        for(var i = 0; i < doc.posts.length; i++){
-            if(doc.posts[i]._id == postId){
-                postIndex = i;
-                var post = doc.posts[i];
-                for(var j = 0; j < post.comments.length; j++){
-                    if(post.comments[j] == commentId){
-                        commentIndex = j;
-                        for(var u = 0; u < post.comments[j].ups.length; u++){
-                            if(post.comments[j].ups[u] == uper){
-                                uperIndex = u;
-                                hasThisPostThisCommentAndThisUper = true;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        utils.getIndexOrHandleNotFound(ups, uper, uperIndex, res);
 
-        if(!hasThisPostThisCommentAndThisUper){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
+        post.comments[commentIndex].ups.splice(uperIndex, 1);
+        await(post.save());
 
-        doc.posts[postIndex].comments[commentIndex].ups.splice(uperIndex, 1);
-        doc.save(function(err){
-            if (err) {
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            return res.json({
-                data: doc.post[postIndex].comments[commentIndex].ups
-            });
-        });
-    });
-}
+        return res.json({
+            data: post.comments[commentIndex].ups
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})

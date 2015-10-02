@@ -34,5 +34,16 @@ module.exports = {
                 errLog: constant.errLog.DbNotFound
             })
         }
+    },
+    pushToArrayMatchPropOrHandleAlreadyExists: function(arr, prop, insert, res){
+        if(arr.some(function(element){
+                return element[prop] == insert[prop];
+            })){
+            return res.json({
+                errLog: constant.errLog.AlreadyExists
+            })
+        }else{
+            arr.push(insert);
+        }
     }
 }

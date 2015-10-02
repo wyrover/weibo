@@ -7,9 +7,19 @@ var await = require('asyncawait').await;
 var reqParser = require('../services/reqParser');
 var errHandler = require('../services/errHandler');
 var userService = require('../services/user');
+var postService = require('../services/post');
 var constant = require('../constant');
 var PostModel = require('../models').post;
 var UserModel = require('../models').user;
+
+var packFeedToFeeds = function(post, feeds, res){
+    var parents = postService.getParents(post, res);
+    var feed = {
+        post: post,
+        parents: parents
+    }
+    feeds.push(feed);
+}
 
 exports.pull = async(function(req, res){
     var userId = reqParser.parseProp(req, 'userId');
@@ -24,8 +34,7 @@ exports.pull = async(function(req, res){
         for(var i = 0; i < user.posts.length; i++){
             var post = await(PostModel.findById(user.posts[i]).exec());
             errHandler.handleNotFound(post, res);
-
-            feeds.push(post);
+            packFeedToFeeds(post, feeds, res);
         }
 
         // collect followings
@@ -35,7 +44,7 @@ exports.pull = async(function(req, res){
             for(var k = 0; k < user.posts.length; k++){
                 var followingPost = await(PostModel.findById(following.posts[k]).exec());
                 errHandler.handleNotFound(followingPost, res);
-                feeds.push(followingPost);
+                packFeedToFeeds(followingPost, feeds, res);
             }
         }
 
@@ -48,5 +57,5 @@ exports.pull = async(function(req, res){
     }
 })
 
-// finally , the feeds structure looks like **feeds:[[], [], []].**
+// finally , the feeds structure looks like **feeds:[{post, parents}, {post, parents}, {post, parents}].**
 // the first element of every array is the post, its parents following

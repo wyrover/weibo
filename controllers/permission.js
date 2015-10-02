@@ -2,167 +2,71 @@
  * Created by Tink on 2015/9/21.
  */
 
-var RoleModel = require('../models').role;
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
+var utils = require('../services/utils');
 var reqParser = require('../services/reqParser');
+var errHandler = require('../services/errHandler');
 var constant = require('../constant');
+var RoleModel = require('../models').role;
+var PermissionModel = require('../models').permission;
 
-exports.add = function(req, res){
-    var type = reqParser.parseProp(req, 'roleType');
-    var permission = reqParser.parseProp(req, 'permission');
+exports.create = async(function(req, res){
+    var resource = reqParser.parseProp(req, 'resource');
+    var action = reqParser.parseProp(req, 'action');
 
-    RoleModel.findOne({type: type}, function(err, doc) {
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
+    try{
+        var existed = await(PermissionModel.findOne({resource: resource, action: action}).exec());
+        errHandler.handleAlreadyExists(existed, res);
 
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        for(var i = 0; i < doc.permissions.length; i++){
-            if(doc.permissions[i].resource == permission.resource){
-                return res.json({
-                    errLog: constant.errLog.AlreadyExists
-                });
-            }
-        }
-
-        doc.permissions.push(permission);
-        doc.save(function(err){
-            if (err) {
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            return res.json({
-                data: doc.permissions
-            });
-        });
-    });
-}
-
-exports.deleteOne = function(req, res){
-    var type = reqParser.parseProp(req, 'roleType');
-    var permission = reqParser.parseProp(req, 'permission');
-
-    RoleModel.findOne({type: type}, function(err, doc) {
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-
-        var hasThisPermission = false;
-        var permissionIndex;
-        for(var i = 0; i < doc.permissions.length; i++){
-            if(doc.permissions[i].resource == permission.resource){
-                hasThisPermission = true;
-                permissionIndex = i;
-                break;
-            }
-        }
-
-        if(!hasThisPermission){
-            return res.json({
-                errLog: constant.errLog.ButItDoesntExist
-            });
-        }
-
-        doc.permissions.splice(permissionIndex, 1);
-        doc.save(function(err){
-            if (err) {
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
-
-            return res.json({
-                data: doc.permissions
-            });
-        });
-    });
-}
-
-exports.update = function(req, res){
-    var type = reqParser.parseProp(req, 'roleType');
-    var permission = reqParser.parseProp(req, 'permission');
-
-    RoleModel.findOne({type: type}, function(err, doc) {
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        for(var i = 0; i < doc.permissions.length; i++){
-            if(doc.permissions[i].resource == permission.resource){
-                doc.permissions[i] = permission;
-                doc.save(function(err){
-                    if (err) {
-                        return res.json({
-                            errLog: constant.errLog.DbErr
-                        });
-                    }
-
-                    return res.json({
-                        data: doc.permissions
-                    });
-                });
-            }
-        }
+        var permission = {};
+        permission.resource = resource;
+        permission.action = action;
+        var result = await(PermissionModel.create(permission));
 
         return res.json({
-            errLog: constant.errLog.ButItDoesntExist
-        });
-    });
-}
+            data: result
+        })
 
-exports.deleteAll = function(req, res){
-    var type = reqParser.parseProp(req, 'roleType');
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-    RoleModel.findOne({type: type}, function(err, doc) {
-        if (err) {
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
+exports.getAll = async(function(req, res){
+    try{
+        var permissions = await(PermissionModel.find().exec());
+        return res.json({
+            data: permissions
+        })
 
-        if (!doc) {
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
 
-        doc.permissions = [];
+exports.delete = async(function(req, res){
+    var resource = reqParser.parseProp(req, 'resource');
+    var action = reqParser.parseProp(req, 'action');
 
-        doc.save(function(err){
-            if (err) {
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
+    try{
+        var permission = await(PermissionModel.findOneAndRemove({resource: resource, action: action}).exec());
+        errHandler.handleNotFound(permission, res);
+
+        var roles = await(RoleModel.find().exec());
+        for(var i = 0; i < roles.length; i++){
+            for(var j = 0; j < roles[i].permissions.length; j++){
+                if(roles[i].permissions[j].resource == resource){
+                    var role = await(RoleModel.findById(roles[i]._id).exec());
+                    role.permissions.splice(j, 1);
+                    await(role.save());
+                }
             }
-
-            return res.json({
-                data: doc
-            });
-        });
-    });
-}
+        }
+        return res.json({
+            data: true
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})

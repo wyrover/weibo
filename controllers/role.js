@@ -2,104 +2,142 @@
  * Created by Tink on 2015/9/20.
  */
 
-var RoleModel = require('../models').role;
+var async = require('asyncawait').async;
+var await = require('asyncawait').await;
 var reqParser = require('../services/reqParser');
+var errHandler = require('../services/errHandler');
 var constant = require('../constant');
+var RoleModel = require('../models').role;
+var PermissionModel = require('../models').permission;
 
-exports.get = function(req, res){
+
+exports.create = async(function(req, res){
     var type = reqParser.parseProp(req, 'roleType');
 
-    RoleModel.findOne({type: type}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
-
-        return res.json({
-            data: doc
-        })
-
-    });
-}
-
-exports.create = function(req, res){
-    console.log(res.body);
-    var type = reqParser.parseProp(req, 'roleType');
-    console.log(type);
-
-    RoleModel.findOne({type: type}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
-
-        if(doc){
-            return res.json({
-                errLog: constant.errLog.AlreadyExists
-            });
-        }
+    try{
+        var existed = await(RoleModel.findOne({type: type}).exec());
+        errHandler.handleAlreadyExists(existed, res);
 
         var role = {};
         role.type = type;
-        RoleModel.create(role, function(err, docx){
-            if(err){
-                return res.json({
-                    errLog: constant.errLog.DbErr
-                });
-            }
+        await(RoleModel.create(role));
 
-            return res.json({
-                data: docx
-            });
-        });
-    });
-}
+        return res.json({
+            data: role
+        })
 
-exports.update = function(req, res){
+
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+});
+
+exports.get = async(function(req, res){
+    var type = reqParser.parseProp(req, 'roleType');
+
+    try{
+        var role = await(RoleModel.findOne({type: type}).exec());
+        errHandler.handleNotFound(role, res);
+
+        return res.json({
+            data: role
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+});
+
+exports.getAll = async(function(req, res){
+
+    try{
+        var roles = await(RoleModel.find().exec());
+        return res.json({
+            data: roles
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+});
+
+exports.changeName = async(function(req, res){
     var type = reqParser.parseProp(req, 'roleType');
     var newType = reqParser.parseProp(req, 'newType');
-    var newPermissions = reqParser.parseProp(req, 'newPermissions');
 
-    RoleModel.findOne({type: type}, function(err, doc){
-        if(err){
-            return res.json({
-                errLog: constant.errLog.DbErr
-            });
-        }
+    try{
+        var role = await(RoleModel.findOne({type: type}).exec());
+        errHandler.handleNotFound(role, res);
 
-        if(!doc){
-            return res.json({
-                errLog: constant.errLog.DbNotFound
-            });
-        }
+        role.type = newType;
+        await(role.save());
 
-        // Q: why not validate them before?
-        // A: If u want to only update either of type or permissions, validate prop is necessary.
-        var eitherIsValid = false;
-        if(typeof newType != 'undefined'){
-            doc.type = newType;
-            eitherIsValid = true;
-        }
+        return res.json({
+            data: role
+        })
 
-        if(typeof newPermissions != 'undefined'){
-            doc.permissions = newPermissions;
-            eitherIsValid = true;
-        }
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+});
 
-        if(eitherIsValid){
-            doc.save(function(err){
-                return res.json({
-                    data: doc
-                });
-            });
-        }
-    });
-}
+exports.delete = async(function(req, res){
+    var type = reqParser.parseProp(req, 'roleType');
+
+    try{
+        var role = await(RoleModel.findOneAndRemove({type: type}).exec());
+        errHandler.handleNotFound(role, res);
+
+        return res.json({
+            data: role
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+});
+
+//              permission
+//---------------------------------------
+
+exports.addPermission = async(function(req, res){
+    var type = reqParser.parseProp(req, 'roleType');
+    var resource = reqParser.parseProp(req, 'resource');
+    var action = reqParser.parseProp(req, 'action');
+
+    try{
+        var role = await(RoleModel.findOne({type: type}).exec());
+        errHandler.handleNotFound(role, res);
+
+        var permission = await(PermissionModel.findOne({resource: resource, action: action}).exec());
+        errHandler.handleNotFound(permission, res);
+
+        utils.pushToArrayMatchPropOrHandleAlreadyExists(role.permissions, 'resource', permission, res);
+        await(role.save());
+
+        return res.json({
+            data: role.permissions
+        })
+
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
+
+exports.deletePermission = async(function(req, res){
+    var type = reqParser.parseProp(req, 'roleType');
+    var permission = reqParser.parseProp(req, 'permission');
+
+    try{
+        var role = await(RoleModel.findOne({type: type}).exec());
+        errHandler.handleNotFound(role, res);
+        var permissionIndex;
+        utils.getIndexWithPropOrHandleNotFound(role.permissions, 'resource', permission, permissionIndex, res);
+
+        role.permissions.splice(permissionIndex, 1);
+        await(role.save());
+
+        return res.json({
+            data: role.permissions
+        })
+    }catch(err){
+        errHandler.handleDbErr(res);
+    }
+})
