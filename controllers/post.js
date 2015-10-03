@@ -11,6 +11,7 @@ var userService = require('../services/user');
 var postService = require('../services/post');
 var constant = require('../constant');
 var PostModel = require('../models').post;
+var UserModel = require('../models').user;
 
 
 var getIndexOrHandleNotFound = function(arr, rhs, index, res){
@@ -30,7 +31,7 @@ var getIndexOrHandleNotFound = function(arr, rhs, index, res){
 }
 
 
-//                 post
+//                 post & repost
 //------------------------------------------------
 exports.publish = async(function(req, res){
     var userId = reqParser.parseProp(req, 'userId');
@@ -44,6 +45,22 @@ exports.publish = async(function(req, res){
         post.author = user.name;
         var newPost = await(PostModel.create(post));
         user.posts.push(newPost._id);
+
+        if(newPost.parent !== ''){
+            var parentPost = await(PostModel.findById(newPost.parent).exec());
+            var parentAuthor = await(UserModel.findOne({name: newPost.author}).exec());
+            var notification = {
+                actor: user.name,
+                verb: constant.logVerb.Repost,
+                res: parentPost._id,
+                resSummary: parentPost.content,
+                ref: newPost._id,
+                refSummary: newPost.content
+            }
+            parentAuthor.notifications.push(notification);
+            await(parentAuthor.save());
+        }
+
         await(user.save());
 
         return res.json({
@@ -178,6 +195,16 @@ exports.up = async(function (req, res) {
         }else{
             post.ups.push(uper);
         }
+
+        var notification = {
+            actor: uper,
+            verb: constant.logVerb.UpPost,
+            res: postId,
+            resSummary: post.content
+        };
+        user.notifications.push(notification);
+        await(upUser.save());
+
         await(post.save());
 
         return res.json({

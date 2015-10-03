@@ -73,6 +73,13 @@ exports.follow = async(function(req, res){
         user.followings.push(followingName);
         following.followers.push(user.name);
 
+        //-- push notification --
+        var notification = {
+            actor: user.name,
+            verb: constant.logVerb.Follow,
+        };
+        following.notifications.push(notification);
+
         await(user.save());
         await(following.save());
 

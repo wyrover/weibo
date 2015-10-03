@@ -18,17 +18,20 @@ module.exports = {
     logVerb: {
         Follow              : '关注', // xx关注了你
         SendMessage         : '私信', // xx给你发了一条新消息
-        Up                  : '赞', //
-        Reply               : '回复', //
+        UpPost              : '赞', //
+        UpComment           : '赞',
+        Comment             : '评论', //
+        Reply               : '回复',
+        Repost              : '转发'
     },
 
-    logOrder: {
-        Actor_Verb_Res      : 1, // 我发布了一条新post
-        Actor_Verb_Recipient: 2, // xx关注了我
-        Actor_Recipient_Verb_Res: 3, // xx给我发了一条私信
-        Actor_Field_Verb_Res: 4, // 我在专栏发布了一篇文章
-        Actor_Verb_Recipient_Field_Res: 5 // xx回复了我在某条post下的某条评论
-    },
+    //logOrder: {
+    //    Actor_Verb_Res      : 1, // 我发布了一条新post
+    //    Actor_Verb_Recipient: 2, // xx关注了我
+    //    Actor_Recipient_Verb_Res: 3, // xx给我发了一条私信
+    //    Actor_Field_Verb_Res: 4, // xx在专栏发布了一篇文章
+    //    Actor_Verb_Recipient_Field_Res: 5 // xx回复了我在某条post下的某条评论
+    //},
 
     errLog: {
         DbErr               : '数据库出错',

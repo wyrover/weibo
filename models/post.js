@@ -10,7 +10,7 @@ var constant = require('../constant');
 var Comment = new Schema({
     author      : String,
     content     : String,
-    //position    : String, // 评论楼层
+    position    : String, // 评论楼层
     createDate  : {type: Date, default: Date.now},
     ups         : [String], //name
     parent      : {type: String, default: ''}, // 跟评的原po
@@ -28,16 +28,18 @@ var Post = new Schema({
 });
 
 var Notification = new Schema({
-    guest       : String,
-    field       : String,
-    fieldLink   : String,
+    actor       : String,
+    recipient   : String,
     verb        : String,
-    res         : String,
-    resLink     : String,
-    order       : Number, // 语序
+    field       : String,
+    fieldSummary: String,
+    resource    : String, // 资源
+    resSummary  : String,
+    reference   : String, // 引用
+    refSummary  : String, //
     status      : {type: Number, default: constant.notificationStatus.New}, // 状态
     createDate  : {type: Date, default: Date.now()},
-    content     : String
+    //content     : String
 
 })
 

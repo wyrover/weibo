@@ -16,24 +16,55 @@ exports.publish = async(function(req, res){
     var userId = reqParser.parseProp(req, 'userId');
     var username = reqParser.parseProp(req, 'username');
     var postId = reqParser.parseProp(req, 'postId');
+    var parentComment = reqParser.parseProp(req, 'parentComment');
     var authorId = reqParser.parseProp(req, 'authorId');
     var authorName = reqParser.parseProp(req, 'authorName');
     var comment = reqParser.parseProp(req, 'comment');
 
     try{
-        //var user = userService.getUserByIdOrName(userId, username);
-        //errHandler.handleNotFound(user, res);
-        //var postIndex;
-        //utils.getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
-        //todo notifications
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
 
         var post = await(PostModel.findById(postId).exec());
         errHandler.handleNotFound(post, res);
+
+        if(parentComment){
+            var pcAuthor = await(UserModel.findOne({name: parentComment.author}).exec());
+            errHandler.handleNotFound(pcAuthor, res);
+        }
 
         var author = userService.getUserByIdOrName(authorId, authorName);
         errHandler.handleNotFound(author, res);
         comment.author = author.name;
         post.comments.push(comment);
+
+        var ntfToPoster = {
+            actor: author.name,
+            verb: constant.logVerb.Comment,
+            res: postId,
+            resSummary: post.content,
+            ref: comment.position,
+            refSummary: comment.content,
+
+
+        };
+        user.notifications.push(ntfToPoster);
+
+        if(parentComment){
+            var nftToCommenter = {
+                actor: author.name,
+                verb: constant.logVerb.Reply,
+                field: postId,
+                fieldSummary: post.content,
+                res: parentComment.position,
+                resSummary: parentComment.content,
+                ref: comment.position,
+                refSummary: comment.content
+            };
+            pcAuthor.notifications.push(nftToCommenter);
+            await(pcAuthor.save());
+        }
+        await(user.save());
         await(post.save());
 
         return res.json({
@@ -78,6 +109,9 @@ exports.up = async(function(req, res){
     var uper = reqParser.parseProp(req, 'uper');
 
     try{
+        var user = userService.getUserByIdOrName(userId, username);
+        errHandler.handleNotFound(user, res);
+
         var post = await(PostModel.findById(postId).exec());
         errHandler.handleNotFound(post, res);
         var commentIndex;
@@ -93,6 +127,18 @@ exports.up = async(function(req, res){
         }else{
             post.comments[commentIndex].ups.push(uper);
         }
+
+        var notification = {
+            actor: uper,
+            verb: constant.logVerb.UpComment,
+            field: postId,
+            fieldSummary: post.content,
+            res: post.comments[commentIndex].position,
+            resSummary: post.comments[commentIndex].content,
+        };
+        user.notifications.push(notification);
+        await(user.save());
+
         await(post.save());
 
         return res.json({
