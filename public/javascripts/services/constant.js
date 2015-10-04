@@ -3,13 +3,21 @@
  */
 'use strict';
 
-angular.module('app').factory('userData' ,function($http){
+angular.module('app').factory('constant' ,function(){
     return {
         roleType: {
-            Admin               : 'Admin', // 管理员
-            Normal              : 'Normal', // 一般用户
-            Blocked             : 'Blocked', // 被屏蔽用户
-            Unchecked           : 'Unchecked', // 未审核用户
+            Admin               : '管理员', // 管理员
+            Normal              : '一般用户', // 一般用户
+            Blocked             : '被屏蔽用户', // 被屏蔽用户
+            Unchecked           : '未审核用户', // 未审核用户
+        },
+
+        permissionAction: {
+            READ_ONLY       : 1, // 只读
+            CREATE          : 2, // 创建(并可以查看)
+            UPDATE          : 3, // 更新(并可以查看)
+            DELETE          : 4, // 删除(并可以查看)
+            ALL             : 5, // 全部
         },
 
         notificationStatus: {
@@ -21,24 +29,19 @@ angular.module('app').factory('userData' ,function($http){
         logVerb: {
             Follow              : '关注', // xx关注了你
             SendMessage         : '私信', // xx给你发了一条新消息
-            Up                  : '赞', //
-            Reply               : '回复', //
-        },
-
-        logOrder: {
-            Actor_Verb_Res      : 1, // 我发布了一条新post
-            Actor_Verb_Recipient: 2, // xx关注了我
-            Actor_Recipient_Verb_Res: 3, // xx给我发了一条私信
-            Actor_Field_Verb_Res: 4, // 我在专栏发布了一篇文章
-            Actor_Verb_Recipient_Field_Res: 5 // xx回复了我在某条post下的某条评论
+            UpPost              : '赞', //
+            UpComment           : '赞',
+            Comment             : '评论', //
+            Reply               : '回复',
+            Repost              : '转发'
         },
 
         errLog: {
-            DbErr               : 1,
-            DbNotFound          : 2,
-            AlreadyExists       : 3,
-            ReqArgumentIsUnvalid: 4,
-            ButItDoesntExist    : 5,
+            DbErr               : '数据库出错',
+            DbNotFound          : '数据未找到',
+            AlreadyExists       : '数据已存在',
+            ReqArgumentIsUnvalid: '请求参数有误'
         }
+
     }
 });

@@ -8,7 +8,8 @@ var constant = require('../constant');
 // 权限: 受限资源及操作动作
 var Permission = new Schema({
     resource        : String,
-    action          : Number,
+    action          : {type: String, default: constant.permissionAction.READ_ONLY},
+    desc            : {type: String, default: '' }
 });
 
 // 角色, 每个用户依赖一个角色,

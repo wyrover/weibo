@@ -87,7 +87,7 @@ exports.delete = async(function(req, res){
         errHandler.handleNotFound(role, res);
 
         return res.json({
-            data: role
+            data: true
         })
     }catch(err){
         errHandler.handleDbErr(res);
@@ -103,6 +103,9 @@ exports.addPermission = async(function(req, res){
     var action = reqParser.parseProp(req, 'action');
 
     try{
+        console.log(type);
+        console.log(resource);
+        console.log(action);
         var role = await(RoleModel.findOne({type: type}).exec());
         errHandler.handleNotFound(role, res);
 
@@ -113,7 +116,7 @@ exports.addPermission = async(function(req, res){
         await(role.save());
 
         return res.json({
-            data: role.permissions
+            data: role
         })
 
     }catch(err){

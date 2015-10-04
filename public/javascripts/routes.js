@@ -63,7 +63,7 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
                     'stylesheets/bootstrap.min.css',]
             }
         })
-        /*
+        /*      sign
          / ---------------------*/
         .state('sign', {
             parent: 'root',
@@ -84,19 +84,32 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
         //    template: ''
         //})
 
-        .state('test', {
-            url: '/test',
-            parenr: 'root',
-            templateUrl: 'views/test.html',
-            data: {
-                css: 'stylesheets/theme.css'
+        /*      admin-page
+         / ---------------------*/
+        .state('dashboard', {
+            url: '/dashboard',
+            parent: 'root',
+            templateUrl: 'views/dashboard.html',
+            data:{
+                css:[
+                    'bower_components/font-awesome/css/font-awesome.min.css',
+                    "stylesheets/dashboard/demo.css",
+                    "stylesheets/dashboard/light-bootstrap-dashboard.css",
+                    "stylesheets/dashboard/animate.min.css",
+                    'stylesheets/bootstrap.min.css'
+                ]
             }
         })
-        .state('admin', {
-            url: '/admin',
-            parent: 'sign',
-            templateUrl: 'views/role.html'
-        });
+        .state('roleManager', {
+            url: '/roleManager',
+            parent: 'dashboard',
+            templateUrl: 'views/dashboard/role.html'
+        })
+
+
+    ;
+
+
 
 
 }])

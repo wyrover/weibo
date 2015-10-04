@@ -14,6 +14,7 @@ var PermissionModel = require('../models').permission;
 exports.create = async(function(req, res){
     var resource = reqParser.parseProp(req, 'resource');
     var action = reqParser.parseProp(req, 'action');
+    var desc = reqParser.parseProp(req, 'desc');
 
     try{
         var existed = await(PermissionModel.findOne({resource: resource, action: action}).exec());
@@ -22,6 +23,7 @@ exports.create = async(function(req, res){
         var permission = {};
         permission.resource = resource;
         permission.action = action;
+        permission.desc = desc;
         var result = await(PermissionModel.create(permission));
 
         return res.json({
@@ -56,7 +58,7 @@ exports.delete = async(function(req, res){
         var roles = await(RoleModel.find().exec());
         for(var i = 0; i < roles.length; i++){
             for(var j = 0; j < roles[i].permissions.length; j++){
-                if(roles[i].permissions[j].resource == resource){
+                if(roles[i].permissions[j].resource == resource && roles[i].permissions[j].action == action){
                     var role = await(RoleModel.findById(roles[i]._id).exec());
                     role.permissions.splice(j, 1);
                     await(role.save());

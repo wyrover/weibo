@@ -3,10 +3,18 @@
  */
 module.exports = {
     roleType: {
-        Admin               : 'Admin', // 管理员
-        Normal              : 'Normal', // 一般用户
-        Blocked             : 'Blocked', // 被屏蔽用户
-        Unchecked           : 'Unchecked', // 未审核用户
+        Admin               : '管理员', // 管理员
+        Normal              : '一般用户', // 一般用户
+        Blocked             : '被屏蔽用户', // 被屏蔽用户
+        Unchecked           : '未审核用户', // 未审核用户
+    },
+
+    permissionAction: {
+        READ_ONLY       : '只读', // 只读
+        CREATE          : '可创建', // 创建(并可以查看)
+        UPDATE          : '可编辑', // 更新(并可以查看)
+        DELETE          : '可删除', // 删除(并可以查看)
+        ALL             : '皆可', // 全部
     },
 
     notificationStatus: {
