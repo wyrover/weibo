@@ -39,7 +39,7 @@ exports.publish = async(function(req, res){
     var post = reqParser.parseProp(req, 'post');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         post.author = user.name;
@@ -99,7 +99,7 @@ exports.getOnesAll = async(function(req, res){
     var username = reqParser.parseProp(req, 'username');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         var posts = [];
@@ -128,7 +128,7 @@ exports.deleteOne = async(function(req, res){
     var postId = reqParser.parseProp(req, 'postId');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         var postIndex;
         getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
@@ -153,7 +153,7 @@ exports.deleteOneJustInUserPosts = async(function(req, res){
     var postId = reqParser.parseProp(req, 'postId');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         var postIndex;
         getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
@@ -179,7 +179,7 @@ exports.up = async(function (req, res) {
     var uper = reqParser.parseProp(req, 'uper');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         var postIndex;
         getIndexOrHandleNotFound(user.posts, postId, postIndex, res);
@@ -224,7 +224,7 @@ exports.unup = async(function(req, res){
 
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         var postIndex;
         getIndexOrHandleNotFound(user.posts, postId, postIndex, res);

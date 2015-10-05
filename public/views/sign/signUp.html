@@ -1,0 +1,19 @@
+<div ng-controller="signCtrl">
+    <br>
+
+    <form class="form-inline info-text" role="form">
+        <button type="submit" class="btn btn-danger btn-fill btn-wd">注册</button>
+        <button type="submit" class="btn btn-danger btn-wd" ui-sref="signIn">登录</button>
+    </form>
+    <div class="sign-input">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="邮箱" ng-model="signInputs.email">
+            <br>
+            <input type="text" class="form-control" placeholder="用户名" ng-model="signInputs.username">
+            <br>
+            <input type="password" class="form-control" placeholder="密码" ng-model="signInputs.password">
+            <br>
+            <button type="submit" class="btn btn-danger btn-lwd" ng-click="signUp()">创建新用户</button>
+        </div>
+    </div>
+</div>

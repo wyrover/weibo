@@ -67,22 +67,26 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
          / ---------------------*/
         .state('sign', {
             parent: 'root',
-            templateUrl: 'views/sign.html'
+            templateUrl: 'views/sign/sign.html',
+            data: {
+                css: [
+                    'stylesheets/sign/sign.css',
+                    'bower_components/font-awesome/css/font-awesome.min.css',
+                    'stylesheets/bootstrap.min.css']
+            }
         })
         .state('signIn', {
             url: '/signIn',
             parent: 'sign',
-            templateUrl: 'views/signIn.html'
+            templateUrl: 'views/sign/signIn.html'
         })
         .state('signUp', {
             url: '/signUp',
             parent: 'sign',
-            templateUrl: 'views/signUp.html'
+            templateUrl: 'views/sign/signUp.html'
         })
-        //.state('signing', {
-        //    parent: 'sign',
-        //    template: ''
-        //})
+
+
 
         /*      admin-page
          / ---------------------*/

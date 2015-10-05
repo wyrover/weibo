@@ -18,7 +18,7 @@ exports.sendMessage = async(function(req, res){
     var receiverName = reqParser.parseProp(req, 'receiver');
 
     try{
-        var sender = userService.getUserByIdOrName(senderId, senderName);
+        var sender = await(userService.getUserByIdOrName(senderId, senderName));
         errHandler.handleNotFound(sender, res);
 
         var receiver = await(UserModel.findOne({name: receiverName}).exec());

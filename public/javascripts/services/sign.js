@@ -7,7 +7,11 @@
 angular.module('app').factory('signService' ,function($http){
     return {
         signIn: function(data){
-            return $http.get('/sign?username=' + data.username + '&password=' + data.password + '&email=' + data.email);
+            if(data.email){
+                return $http.get('/sign?email=' + data.email+ '&password=' + data.password);
+            }else{
+                return $http.get('/sign?username=' + data.username + '&password=' + data.password);
+            }
         },
 
         signUp: function(data){

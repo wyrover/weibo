@@ -62,7 +62,7 @@ exports.follow = async(function(req, res){
     var followingName = reqParser.parseProp(req, 'followingName');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         handleAlreadyHasThisFollowing(user, followingName, res);
 
@@ -100,7 +100,7 @@ exports.unfollow = async(function (req, res) {
 
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         var followingIndex;
         getIndexOrHandleNotFound(user.followings, followingName, followingIndex, res);
@@ -131,7 +131,7 @@ exports.deleteFollower = async(function(req, res){
     var followerName = reqParser.parseProp(req, 'followingName');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
         var followerIndex;
         getIndexOrHandleNotFound(user.followers, followerName, followerIndex, res);

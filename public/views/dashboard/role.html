@@ -87,7 +87,7 @@
                                 <div class="col-md-3">
                                     <label>
                                         <select class="form-control" ng-model="addPermissionInputs.action">
-                                            <option ng-repeat="a in action()" label="{{permission.resource}}" value="{{permission.resource}}"></option>
+                                            <option ng-repeat="sp in getSameResourcePermissions(addPermissionInputs.resource)" label="{{sp.action}}" value="{{sp.action}}"></option>
                                         </select>
                                     </label>
                                 </div>

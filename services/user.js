@@ -7,31 +7,31 @@ var await = require('asyncawait').await;
 var UserModel = require('../models').user;
 
 module.exports = {
-    getUserByIdOrName: async(function(id, name){
+    getUserByIdOrName: function(id, name){
         if(id){
-            return await(UserModel.findById(id).exec());
+            return UserModel.findById(id).exec();
         }
         if(name){
-            return await(UserModel.findOne({name: name}).exec());
+            return UserModel.findOne({name: name}).exec();
         }
         return null;
-    }),
-    getUserByNameOrEmail: async(function (name, email) {
+    },
+    getUserByNameOrEmail: function (name, email) {
         if (email) {
-            return await(UserModel.findOne({email: email}).exec());
+            return UserModel.findOne({email: email}).exec();
         }
         if (name) {
-            return await(UserModel.findOne({name: name}).exec());
+            return UserModel.findOne({name: name}).exec();
         }
         return null;
-    }),
-    getUserByNameOrEmailWithPassword: async(function(name, email, password){
+    },
+    getUserByNameOrEmailWithPassword: function(name, email, password){
         if(email){
-            return await(UserModel.findOne({email: email, password: password}).exec());
+            return UserModel.findOne({email: email, password: password}).exec();
         }
         if(name){
-            return await(UserModel.findOne({name: username, password: password}).exec());
+            return UserModel.findOne({name: name, password: password}).exec();
         }
         return null;
-    })
+    }
 }

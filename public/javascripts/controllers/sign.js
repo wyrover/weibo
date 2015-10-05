@@ -20,16 +20,23 @@ angular.module('app').controller('signCtrl', function(
         email: ''
     }
 
-
     /*              methods
      -------------------------------------*/
 
     $scope.signIn = function(){
-        signService.signIn($scope.signInputs).success(function(res){
-            //todo errHandler
-            //todo when coding the logout function, delete local token
-            console.log(res);
-            //authData.changeSiteRoleAndPermissions(res.data.siteRole, res.data.sitePermissions);
+        var reqData = {
+            username: $scope.signInputs.username,
+            password: $scope.signInputs.password,
+            email: $scope.signInputs.email
+        }
+        if(reqData.username.split('').some(function(chara){
+                return chara == '@';
+            })
+        ){
+            reqData.email = reqData.username;
+            reqData.username = '';
+        }
+        signService.signIn(reqData).success(function(res){
             $localStorage.token = res.data.token;
             $localStorage.user = res.data;
             $state.go('home');
@@ -38,14 +45,13 @@ angular.module('app').controller('signCtrl', function(
 
     $scope.signUp = function(){
         signService.signUp($scope.signInputs).success(function(res){
-            //todo errHandler
-            console.log(res.data);
             $state.go('signIn');
         });
     }
 
     $scope.signOut = function(){
         //clear localStorage
+        // todo when coding the logout function, delete local token
     }
 
 

@@ -28,6 +28,52 @@ angular.module('app').factory('weiboUtils', function ($http) {
             }
             return null;
         },
+        findListAndIndexes: function(arr, rhs){
+            var results = [];
+            var elements = [];
+            var indexes = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] === rhs) {
+                    results.push({
+                        element: arr[i],
+                        index: i
+                    });
+                    elements.push(arr[i]);
+                    indexes.push(i);
+                }
+            }
+            if(results.length === 0){
+                return null;
+            }
+            return {
+                results: results,
+                elements: elements,
+                indexes: indexes
+            };
+        },
+        findListAndIndexesWithProp: function(arr, prop, rhs){
+            var results = [];
+            var elements = [];
+            var indexes = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i][prop] === rhs) {
+                    results.push({
+                        element: arr[i],
+                        index: i
+                    });
+                    elements.push(arr[i]);
+                    indexes.push(i);
+                }
+            }
+            if(results.length === 0){
+                return null;
+            }
+            return {
+                results: results,
+                elements: elements,
+                indexes: indexes
+            };
+        },
         updateOne: function(arr, rhs, updateProp, updateVal){
             for (var i = 0; i < arr.length; i++) {
                 if (arr[i] === rhs) {

@@ -4,7 +4,7 @@
 
 'use strict';
 
-angular.module('app').factory('roleData', function($http){
+angular.module('app').factory('roleService', function($http){
     return {
         create: function(data){
             return $http.post('/role', data);
@@ -19,7 +19,7 @@ angular.module('app').factory('roleData', function($http){
             return $http.get('/roles');
         },
         addPermission: function(data){
-            return $http.post('/role/permission', data);
+            return $http.post('/role/permission', {roleType: '管理员', resource: '用户信息', action: '只读'});
         },
         deletePermission: function(data){
             return $http.delete('/role/permission');
@@ -27,7 +27,7 @@ angular.module('app').factory('roleData', function($http){
     }
 });
 
-angular.module('app').factory('permissionData', function($http){
+angular.module('app').factory('permissionService', function($http){
     return {
         create: function(data){
             return $http.post('/permission', data);

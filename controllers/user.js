@@ -21,15 +21,16 @@ exports.signIn = async(function(req, res){
     var password = reqParser.parseProp(req, 'password');
 
     try{
-        var user = userService.getUserByNameOrEmailWithPassword(username, email, password);
+        var user = await(userService.getUserByNameOrEmailWithPassword(username, email, password));
         errHandler.handleNotFound(user, res);
         var result = user.toObject();
 
         var userRole = await(RoleModel.findOne({type: result.role}).exec());
-        errHandler.handleNotFound(userRole, res);
+        //errHandler.handleNotFound(userRole, res);
         result.permissions = userRole.permissions;
         result.token = jwt.sign(result, config.tokenSecret, {expiresInMinutes: config.tokenExpires});
-        delete user.password;
+        delete result.password;
+
         return res.json({
             data: result
         })
@@ -75,7 +76,7 @@ exports.getBaseInfo = async(function(req, res){
 
     try{
         // find user by id or name
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         var result = {};
@@ -101,7 +102,7 @@ var updateUserProp = async(function(req, res, propStr){
     var prop = reqParser.parseProp(req, propStr);
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         user[propStr] = prop;
@@ -164,7 +165,7 @@ exports.changeRole = async(function(req, res){
     var role = reqParser.parseProp(req, 'role');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         var newRole = await(RoleModel.findOne({type: role}).exec());

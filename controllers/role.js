@@ -4,6 +4,7 @@
 
 var async = require('asyncawait').async;
 var await = require('asyncawait').await;
+var utils = require('../services/utils');
 var reqParser = require('../services/reqParser');
 var errHandler = require('../services/errHandler');
 var constant = require('../constant');
@@ -103,9 +104,6 @@ exports.addPermission = async(function(req, res){
     var action = reqParser.parseProp(req, 'action');
 
     try{
-        console.log(type);
-        console.log(resource);
-        console.log(action);
         var role = await(RoleModel.findOne({type: type}).exec());
         errHandler.handleNotFound(role, res);
 

@@ -22,7 +22,7 @@ exports.publish = async(function(req, res){
     var comment = reqParser.parseProp(req, 'comment');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         var post = await(PostModel.findById(postId).exec());
@@ -33,7 +33,7 @@ exports.publish = async(function(req, res){
             errHandler.handleNotFound(pcAuthor, res);
         }
 
-        var author = userService.getUserByIdOrName(authorId, authorName);
+        var author = await(userService.getUserByIdOrName(authorId, authorName));
         errHandler.handleNotFound(author, res);
         comment.author = author.name;
         post.comments.push(comment);
@@ -109,7 +109,7 @@ exports.up = async(function(req, res){
     var uper = reqParser.parseProp(req, 'uper');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         var post = await(PostModel.findById(postId).exec());

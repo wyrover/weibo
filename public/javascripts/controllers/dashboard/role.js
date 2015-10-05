@@ -5,7 +5,7 @@
 
 'use strict';
 
-angular.module('app').controller('roleCtrl', function($scope, roleData, permissionData, weiboUtils, constant){
+angular.module('app').controller('roleCtrl', function($scope, roleService, permissionService, weiboUtils, constant){
 
     /*              models
      -------------------------------------*/
@@ -58,7 +58,7 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
         var reqData = {
             roleType: $scope.roleInputs.roleType
         }
-        roleData.create(reqData).success(function(res){
+        roleService.create(reqData).success(function(res){
             if(res.data){
                 $scope.roles.push(res.data);
                 $scope.roleInputs.roleType = '';
@@ -76,7 +76,7 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
                 roleType: oldType,
                 newType: newType
             }
-            roleData.changeName(reqData).success(function(res){
+            roleService.changeName(reqData).success(function(res){
                 if(res.data){
                     weiboUtils.updateOneWithProp($scope.roles, '_id', res.data._id, 'type', res.data.type);
                     $scope.pushSwitch4Panel(id);
@@ -91,7 +91,7 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
         var reqData = {
             roleType: type
         }
-        roleData.delete(reqData).success(function(res){
+        roleService.delete(reqData).success(function(res){
             if(res.data === true){
                 $scope.roles.splice(weiboUtils.findOneAndIndexWithProp($scope.roles, 'type', type).index, 1);
             }else{
@@ -101,20 +101,21 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
     }
 
     $scope.getRoles = function(){
-        roleData.getAll().success(function(res){
+        roleService.getAll().success(function(res){
             console.log(res);
             $scope.roles = res.data;
             $scope.currentRole = $scope.roles[0];
         })
     }
 
+    // todo 改成loadPermission
     $scope.addPermission = function(){
         var reqData = {
             resource: $scope.addPermissionInputs.resource,
             action: $scope.addPermissionInputs.action,
             roleType: $scope.currentRole.type
         }
-        roleData.addPermission(reqData).success(function(res){
+        roleService.addPermission(reqData).success(function(res){
             console.log(res);
             $scope.currentRole = res.data;
             $scope.pushSwitch4AddPermissionPanel();
@@ -123,6 +124,10 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
                 action: '',
             }
         })
+
+    }
+
+    $scope.unloadPermission = function(){
 
     }
 
@@ -137,7 +142,7 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
             action: $scope.permissionInputs.action,
             desc: $scope.permissionInputs.desc
         }
-        permissionData.create(reqData).success(function(res){
+        permissionService.create(reqData).success(function(res){
             if(res.data){
                 $scope.permissions.push(res.data);
                 $scope.permissionInputs = {
@@ -157,7 +162,7 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
             resource: resource,
             action: action
         }
-        permissionData.delete(reqData).success(function(res){
+        permissionService.delete(reqData).success(function(res){
             if(res.data === true){
                 $scope.permissions.splice(weiboUtils.findOneAndIndexWithProp($scope.permissions, '_id', id).index, 1);
             }else{
@@ -166,12 +171,16 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
         })
     }
 
-    $scope.getResourceActions = function(resource){
-        weiboUtils.findOneAndIndexWithProp($scope.permissions, 'resource', resource)
+    $scope.getSameResourcePermissions = function(resource){
+        var permission = weiboUtils.findListAndIndexesWithProp($scope.permissions, 'resource', resource);
+        if(permission){
+            return weiboUtils.findListAndIndexesWithProp($scope.permissions, 'resource', resource).elements;
+        }
+        return [{action: '无'}]
     }
 
     $scope.getPermissions = function(){
-        permissionData.getAll().success(function(res){
+        permissionService.getAll().success(function(res){
             $scope.permissions = res.data;
         })
 
@@ -211,9 +220,5 @@ angular.module('app').controller('roleCtrl', function($scope, roleData, permissi
         $scope.getRoles();
         $scope.getPermissions();
     }();
-
-
-
-
 
 });

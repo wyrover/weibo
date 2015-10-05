@@ -12,10 +12,7 @@ angular.module('app').factory('userData' ,function($http){
 
         updateBaseInfo: function(data){
             return $http.put('/user?username=' + data.username + '&newUser=' + data.newUser);
-        },
-
-        test: function(data){
-            return $http.post('/todo', data);
         }
     }
 });
+

@@ -26,7 +26,7 @@ exports.pull = async(function(req, res){
     var username = reqParser.parseProp(req, 'username');
 
     try{
-        var user = userService.getUserByIdOrName(userId, username);
+        var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
         //collect self

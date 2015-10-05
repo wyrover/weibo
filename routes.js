@@ -21,11 +21,13 @@ module.exports = function(app){
         res.render('index.html')
     });
 
-    //app.get('/sign', validation.usernameIsNull, validation.passwordIsNull, user.signIn); // sign in
-    //app.post('/sign', validation.usernameIsNull, validation.passwordIsNull, validation.emailIsNull, user.signUp); // sign up
-    //
-    ///*  /user
-    // -------------------------------------*/
+    /*  /sign
+     -------------------------------------*/
+    app.get('/sign', user.signIn); // sign in
+    app.post('/sign', user.signUp); // sign up
+
+    /*  /user
+     -------------------------------------*/
     //app.get('/user', user.getBaseInfo); // get user_base_info
     //app.put('/user', user.updateBaseInfo); // update user_base_info
     //app.delete('/user');
@@ -60,8 +62,8 @@ module.exports = function(app){
     //app.delete('/follower'); // delete a fan
 
 
-    ///*  /role
-    // -------------------------------------*/
+    /*  /role
+     -------------------------------------*/
     //app.get('/role'); // get role and its permissions info
     app.post('/role', role.create); // create a new role type
     app.put('/role', role.changeName); // update all permissions or type value
@@ -70,17 +72,17 @@ module.exports = function(app){
     app.post('/role/permission', role.addPermission);
     app.delete('role/permission', role.deletePermission);
 
-    ///*  /roles
-    // -------------------------------------*/
+    /*  /roles
+     -------------------------------------*/
     app.get('/roles', role.getAll);
 
-    ///*  /permission
-    // -------------------------------------*/
+    /*  /permission
+     -------------------------------------*/
     app.post('/permission', permission.create); // add a permission
     app.delete('/permission', permission.delete); // delete a permission, also delete it in all roles' permissions
 
-    ///*  /permissions
-    // -------------------------------------*/
+    /*  /permissions
+     -------------------------------------*/
     app.get('/permissions', permission.getAll);
 
 }
