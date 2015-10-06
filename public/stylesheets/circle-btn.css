@@ -79,6 +79,11 @@
 .btn-wd {
     min-width: 140px; }
 
+.btn-flat {
+    padding-top: 0;
+    height: 5px;
+}
+
 .btn-group.select {
     width: 100%; }
 

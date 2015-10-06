@@ -1,30 +1,37 @@
-<div class="profile-content section-nude">
+<div class="profile-content section-nude" xmlns="http://www.w3.org/1999/html">
     <div class="container" ng-controller="userCtrl">
 
         <div class="profile-tabs">
             <div class="row">
+
+                <!--   输入框   -->
                 <div class="col-lg-6 col-md-offset-2">
                     <textarea class="form-control" rows="4" ng-model="contents.mainPost"></textarea>
-                    <ul class="nav nav-tabs">
-                        <br>
-                        <li>
-                            <button class="btn btn-sm">图片</button>
-                        </li>
-                        <li>
-                            <button class="btn btn-sm">视频</button>
-                        </li>
-                        <li>
-                            <button class="btn btn-sm">音乐</button>
-                        </li>
-                        <li class="col-md-offset-6">
-                            <button class="btn btn-sm" ng-click="publishPost()">发布 + </button>
-                        </li>
-                    </ul>
+                    <br>
+                    <div class="form-inline">
+                        <button class="btn btn-sm">图片</button>
+                        <button class="btn btn-sm">视频</button>
+                        <button class="btn btn-sm">音乐</button>
+                        <button class="btn btn-sm btn-info col-md-offset-7" ng-click="publishPost()">发布</button>
+                    </div>
                 </div>
 
+                <!--  名片  -->
                 <div class="col-lg-4">
+
                     <div class="nav-tabs-navigation">
                         <div class="nav-tabs-wrapper">
+
+                            <!-- todo 在这里做一个名片, 身份信息等各种资料的展示-->
+
+                            <!--<div flow-init>-->
+                                <!--<img src="/images/examples/chet_faker_1.jpg"-->
+                                     <!--class="img-rounded img-responsive" tooltips tooltip-side="right" tooltip-content="点击更新头像"-->
+                                     <!--flow-btn>-->
+                            <!--</div>-->
+
+
+
                             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                                 <li><a>&nbsp;&nbsp;关注&nbsp;&nbsp;</a>
 
@@ -36,12 +43,18 @@
 
                                     <p>79</p></li>
                             </ul>
+
+
                         </div>
                     </div>
+
+
                 </div>
+
             </div>
 
             <div class="row">
+
                 <div class="col-md-6 col-md-offset-2">
                     <hr>
                     <ul class="list-unstyled">
@@ -49,31 +62,24 @@
                         <li ng-repeat="feed in feeds">
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-0 col-xs-3 col-xs-offset-2">
-                                    <!--<div tooltips tooltip-title="{{feed.author}}"-->
-                                         <!--tooltip-view="views/tooltip.idCard.html"-->
-                                         <!--tooltip-side="left"-->
-                                         <!--tooltip-view-ctrl="userCtrl"-->
-                                         <!--tooltip-show-trigger="mouseover click"-->
-                                         <!--tooltip-hide-trigger="click"-->
-                                         <!--tooltip-hide-target="both">-->
-                                    <img src="../images/examples/flume.jpg" alt="Circle Image"
-                                              class="img-circle img-no-padding img-responsive">
-                                    <!--</div>-->
+
+                                    <!--  头像 -->
+                                    <img src="../images/examples/flume.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
 
                                 </div>
                                 <div class="col-md-10 col-xs-4">
                                     <h5>
                                         <div>
-                                            {{feed.author}}
-                                            <a class="btn btn-sm" ng-if="showFollowButton(feed.author)" ng-click="follow(feed.author)">关注</a>
-                                            <a class="btn btn-sm" ng-if="showUnFollowButton(feed.author)" ng-click="unFollow(feed.author)">取消关注</a>
+                                            <a>{{feed.post.author}}</a>
+                                            <a class="btn btn-sm btn-simple" ng-if="showFollowButton(feed.post.author)" ng-click="follow(feed.post.author)">关注</a>
+                                            <a class="btn btn-sm btn-simple" ng-if="showUnFollowButton(feed.post.author)" ng-click="unFollow(feed.post.author)">取消关注</a>
                                         </div>
-                                        <small>&nbsp;{{feed.createDate}}</small>
+                                        <small><small>&nbsp;{{feed.post.createDate}}</small></small>
                                     </h5>
-                                    <p>{{feed.content}}</p>
+                                    <p>{{feed.post.content}}</p>
 
                                     <!-- here is the first post-->
-                                    <div>
+                                    <div ng-if="feed.parents.length > 0">
                                         <hr>
                                         <small>@陈佩斯<br>
                                             <small>1小时前</small>
@@ -102,25 +108,25 @@
 
                                     <div>
                                         <div class="col-md-4">
-                                            <a class="btn btn-sm" ng-click="repost()"><small>转发</small></a>
+                                            <a class="btn btn-simple" ng-click="repost()"><small>转发</small></a>
                                         </div>
                                         <div class="col-md-6">
-                                            <a class="btn btn-sm" ng-click="pullComments(feed._id)"><small>评论 {{feed.comments.length}}</small></a>
+                                            <a class="btn btn-simple" ng-click="pullComments(feed.post._id)"><small>评论 {{feed.post.comments.length}}</small></a>
                                         </div>
                                         <div class="col-md-2">
-                                            <a class="btn btn-sm" ng-click="upPost(feed._id)"><small>赞 {{feed.ups.length}}</small></a>
+                                            <a class="btn btn-simple" ng-click="upPost(feed.post._id)"><small><i class="fa fa-thumbs-up"></i>赞 {{feed.post.ups.length}}</small></a>
                                         </div>
                                     </div>
 
-                                    <div ng-if="showComments(feed._id)">
+                                    <div ng-if="showComments(feed.post._id)">
                                         <br>
                                         <br>
 
                                         <div class="col-md-10">
-                                            <textarea class="form-control" rows="1" ng-model="contents[feed._id]"></textarea>
+                                            <textarea class="form-control" rows="1" ng-model="contents[feed.post._id]"></textarea>
                                         </div>
                                         <div class="col-md-2">
-                                            <button class="btn btn-sm" ng-click="publishComment(feed._id)">回复他</button>
+                                            <button class="btn btn-simple btn-info" ng-click="publishComment(feed.post._id)"><small>回复他</small></button>
                                         </div>
                                         <br>
                                         <br>
@@ -134,23 +140,25 @@
                                                 <!--<hr>-->
                                             <!--</div>-->
                                         <!--</div>-->
-                                        <div ng-repeat="comment in feed.comments">
+                                        <div ng-repeat="comment in feed.post.comments">
                                             <small class="col-lg-12">
-                                                @{{comment.author}}: {{comment.content}}
+                                                <a>@{{comment.author}}</a>: {{comment.content}}
                                             </small>
                                             <small class="col-lg-10">
-                                                {{comment.createDate}}
+                                                <small>{{comment.createDate}}</small>
                                             </small>
-                                            <a class="col-lg-2" ng-click="pullComments(comment._id)">
+                                            <!-- todo a 标签的语义化 处理-->
+                                            <a class="col-lg-2 text-right" href="" ng-click="pullComments(comment._id)">
                                                 <small>回复</small>
                                             </a>
 
+
                                             <div ng-if="showComments(comment._id)">
                                                 <hr class="col-lg-11">
-                                                <div class="col-md-2">
-                                                    <a ng-click="replyComment(feed._id, comment._id)"><small>回复Ta</small></a>
+                                                <div class="col-md-3">
+                                                    <button class="btn btn-simple" ng-click="replyComment(feed.post._id, comment._id)"><small class="text-left">回复评论</small></button>
                                                 </div>
-                                                <div class="col-md-10">
+                                                <div class="col-md-9">
                                                     <textarea class="form-control" rows="1" ng-model="contents[comment._id]"></textarea>
                                                 </div>
                                             </div>

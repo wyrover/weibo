@@ -45,8 +45,6 @@ exports.publish = async(function(req, res){
             resSummary: post.content,
             ref: comment.position,
             refSummary: comment.content,
-
-
         };
         user.notifications.push(ntfToPoster);
 

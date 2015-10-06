@@ -33,9 +33,9 @@ var Notification = new Schema({
     verb        : String,
     field       : String,
     fieldSummary: String,
-    resource    : String, // 资源
+    res         : String, // 资源
     resSummary  : String,
-    reference   : String, // 引用
+    ref         : String, // 引用
     refSummary  : String, //
     status      : {type: Number, default: constant.notificationStatus.New}, // 状态
     createDate  : {type: Date, default: Date.now()},

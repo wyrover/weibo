@@ -40,11 +40,12 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
             templateUrl: 'views/home.html',
             data: {
                 css: [
+                    'bower_components/angular-tooltips/src/css/angular-tooltips.css',
                     'bower_components/font-awesome/css/font-awesome.min.css',
                     'stylesheets/footer.css',
                     'stylesheets/banner.css',
                     'stylesheets/profile.css',
-                    //'stylesheets/ct-paper.css',
+                    'stylesheets/ct-paper.css',
                     'stylesheets/bootstrap.min.css',]
             }
         })
@@ -54,6 +55,7 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
             templateUrl: 'views/profile.html',
             data: {
                 css: [
+                    'bower_components/angular-tooltips/src/css/angular-tooltips.css',
                     'bower_components/font-awesome/css/font-awesome.min.css',
                     'stylesheets/footer.css',
                     'stylesheets/banner.css',

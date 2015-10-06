@@ -7,9 +7,8 @@ angular.module('app').controller('userCtrl', function(
     $scope,
     $localStorage,
     $state,
-    userData,
+    userService,
     publishService,
-    feedsData,
     foService){
     /*              models
      -------------------------------------*/
@@ -23,11 +22,30 @@ angular.module('app').controller('userCtrl', function(
 
     /*              methods
      -------------------------------------*/
+
+    //--------feeds-------
+    $scope.pullFeeds = function(){
+        userService.pullFeeds($localStorage.user.name).success(function(res){
+            $scope.feeds = res.data.sort(function(a, b){
+                if(Date.parse(a.post.createDate) >= Date.parse(b.post.createDate)){
+                    return -1;
+                }
+                else{
+                    return 1;
+                }
+            });
+        });
+    }
+
+
+
+
+
     $scope.getBaseInfo = function(username){
         var reqData = {
             username: username
         }
-        userData.getBaseInfo(reqData).success(function(res){
+        userService.getBaseInfo(reqData).success(function(res){
             $localStorage.user = res.data;
         });
     }
@@ -37,7 +55,7 @@ angular.module('app').controller('userCtrl', function(
             username: username,
             newUser: newUser
         }
-        userData.updateBaseInfo(reqData).success(function(res){
+        userService.updateBaseInfo(reqData).success(function(res){
             $localStorage.user = res.data;
         });
     }
@@ -96,19 +114,19 @@ angular.module('app').controller('userCtrl', function(
         var reqData = {
             username: $localStorage.user.name,
             postId: postId,
+            authorName: $localStorage.user.name,
             comment: {
-                author: $localStorage.user.name,
-                content: $scope.contents[postId]
+                content: $scope.contents[postId],
+                position: postId+(Date.now().toString())
             }
         }
 
         publishService.publishComment(reqData).success(function(res){
+            console.log(res);
             delete $scope.contents[postId];
             $scope.pullFeeds();
-
         })
     }
-
 
 
     $scope.replyComment = function(postId, commentId){
@@ -171,20 +189,6 @@ angular.module('app').controller('userCtrl', function(
         }
     }
 
-    $scope.pullFeeds = function(){
-        feedsData.pull($localStorage.user.name).success(function(res){
-            $scope.feeds = res.data.sort(function(a, b){
-                if(Date.parse(a.createDate) >= Date.parse(b.createDate)){
-                    return -1;
-                }
-                else{
-                    return 1;
-                }
-            });
-        });
-    }
-
-
     $scope.showComments = function(postId){
         for(var i = 0; i < $scope.postsShowing.length; i++){
             if($scope.postsShowing[i] == postId){
@@ -243,7 +247,7 @@ angular.module('app').controller('userCtrl', function(
             participants: ["560a096a103725682664937a", "560a094d1037256826649379", "560a08f81037256826649377"],
             title: '吃早饭'
         }
-        userData.test(reqData).success(function(err){
+        userService.test(reqData).success(function(err){
 
         });
     }

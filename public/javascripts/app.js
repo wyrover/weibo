@@ -9,7 +9,7 @@ var app = angular.module('app', [
     'ui.router',
     'uiRouterStyles',
     //'ui.bootstrap',
-    //'720kb.tooltips',
+    '720kb.tooltips',
     'flow'
 ]);
 

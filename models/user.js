@@ -4,6 +4,7 @@
 
 var Schema = require('mongoose').Schema;
 var constant = require('../constant');
+var Notification = require('./post').notification;
 
 // 权限: 受限资源及操作动作
 var Permission = new Schema({
@@ -30,7 +31,7 @@ var User = new Schema({
     followings      : [String], //关注
     createDate      : {type: Date, default: Date.now},
     posts           : [String],
-    notifications   : [String]
+    notifications   : [Notification]
 });
 
 module.exports = {

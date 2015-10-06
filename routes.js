@@ -36,17 +36,18 @@ module.exports = function(app){
     // -------------------------------------*/
     //app.get('/users'); // list users
     //
-    ///*  /user/{{prop}}
-    // -------------------------------------*/
-    //app.get('/feeds', feeds.pull); // get ones timeline
-    //
-    //app.post('/post', post.publish); // add a post/repost for sb
+
+    /*  /user/{{prop}}
+     -------------------------------------*/
+    app.get('/user/feeds', feeds.pull); // get ones timeline
+
+    app.post('/post', post.publish); // add a post/repost for sb
     //app.delete('/post'); // delete a post/repost for sb
     //app.get('/posts'); // get all the posts of sb, when u interview ones home page or admin querys them
     //app.post('/post/up', post.up); // up ones post
     //app.delete('/post/up', post.unUp); // unUp ones post
-    //
-    //app.post('/comment', comment.publish); // add a comment in a  ones post
+
+    app.post('/comment', comment.publish); // add a comment in a  ones post
     //app.delete('/comment'); // delete a comment in a ones post
     //app.get('/comments'); // get all the comments of a post
     //app.post('/comment/up'); // up a comment

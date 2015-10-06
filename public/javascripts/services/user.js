@@ -4,7 +4,7 @@
 
 'use strict';
 
-angular.module('app').factory('userData' ,function($http){
+angular.module('app').factory('userService' ,function($http){
     return {
         getBaseInfo: function(data){
             return $http.get('/user?username=' + data.username);
@@ -12,7 +12,10 @@ angular.module('app').factory('userData' ,function($http){
 
         updateBaseInfo: function(data){
             return $http.put('/user?username=' + data.username + '&newUser=' + data.newUser);
-        }
+        },
+        pullFeeds: function(data){
+            return $http.get('/user/feeds?username=' + data);
+        },
     }
 });
 
