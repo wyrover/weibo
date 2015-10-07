@@ -14,6 +14,7 @@ var Comment = new Schema({
     createDate  : {type: Date, default: Date.now},
     ups         : [String], //name
     parent      : {type: String, default: ''}, // 跟评的原po
+    parentAuthor: {type: String, default: ''}
 });
 
 

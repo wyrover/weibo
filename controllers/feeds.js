@@ -12,8 +12,8 @@ var constant = require('../constant');
 var PostModel = require('../models').post;
 var UserModel = require('../models').user;
 
-var packFeedToFeeds = function(post, feeds, res){
-    var parents = postService.getParents(post, res);
+var packFeedToFeeds = function(post, feeds){
+    var parents = postService.getParents(post);
     var feed = {
         post: post,
         parents: parents
@@ -34,17 +34,18 @@ exports.pull = async(function(req, res){
         for(var i = 0; i < user.posts.length; i++){
             var post = await(PostModel.findById(user.posts[i]).exec());
             errHandler.handleNotFound(post, res);
-            packFeedToFeeds(post, feeds, res);
+            packFeedToFeeds(post, feeds);
         }
+
 
         // collect followings
         for(var j = 0; j < user.followings.length; j++){
             var following = await(UserModel.findOne({name: user.followings[j]}).exec());
             errHandler.handleNotFound(following, res);
-            for(var k = 0; k < user.posts.length; k++){
+            for(var k = 0; k < following.posts.length; k++){
                 var followingPost = await(PostModel.findById(following.posts[k]).exec());
                 errHandler.handleNotFound(followingPost, res);
-                packFeedToFeeds(followingPost, feeds, res);
+                packFeedToFeeds(followingPost, feeds);
             }
         }
 

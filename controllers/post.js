@@ -168,8 +168,6 @@ exports.deleteOneJustInUserPosts = async(function(req, res){
     }
 })
 
-
-
 //                 up & unup
 //------------------------------------------------
 exports.up = async(function (req, res) {
@@ -203,7 +201,7 @@ exports.up = async(function (req, res) {
             resSummary: post.content
         };
         user.notifications.push(notification);
-        await(upUser.save());
+        await(user.save());
 
         await(post.save());
 

@@ -28,7 +28,7 @@ module.exports = function(app){
 
     /*  /user
      -------------------------------------*/
-    //app.get('/user', user.getBaseInfo); // get user_base_info
+    app.get('/user', user.getBaseInfo); // get user_base_info
     //app.put('/user', user.updateBaseInfo); // update user_base_info
     //app.delete('/user');
     //
@@ -44,8 +44,8 @@ module.exports = function(app){
     app.post('/post', post.publish); // add a post/repost for sb
     //app.delete('/post'); // delete a post/repost for sb
     //app.get('/posts'); // get all the posts of sb, when u interview ones home page or admin querys them
-    //app.post('/post/up', post.up); // up ones post
-    //app.delete('/post/up', post.unUp); // unUp ones post
+    app.post('/post/up', post.up); // up ones post
+    app.delete('/post/up', post.unup); // unUp ones post
 
     app.post('/comment', comment.publish); // add a comment in a  ones post
     //app.delete('/comment'); // delete a comment in a ones post
@@ -56,9 +56,9 @@ module.exports = function(app){
     //app.post('/notification'); // add a notification to sb
     //app.delete('/notification'); // delete a notification
     //app.put('/notification/status'); // turn a notification to other status
-    //
-    //app.post('/following', interaction.follow); // follow sb
-    //app.delete('/following', interaction.unFollow); // unfollow sb
+
+    app.post('/following', interaction.follow); // follow sb
+    app.delete('/following', interaction.unfollow); // unfollow sb
     //
     //app.delete('/follower'); // delete a fan
 

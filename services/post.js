@@ -8,23 +8,20 @@ var errHandler = require('../services/errHandler');
 var constant = require('../constant');
 var PostModel = require('../models').post;
 
-var getParent = async(function (post, parents, res) {
-    if (post.parent != '') {
-        try {
-            var parent = await(PostModel.findById(post.parent).exec());
-            errHandler.handleNotFound(parent, res);
-            parents.push(parent);
-        } catch (err) {
-            errHandler.handleDbErr(res);
-        }
-        getParent(parent, parents, res);
-    }
-})
-
-module.exports = {
-    getParents: function (post, res) {
-        var results = [];
-        getParent(post, results, res);
+exports.getParents = async(function (post){
+    var results = [];
+    if(post.hasOwnProperty('parent')){
+        var next = post.parent;
+    }else{
         return results;
     }
-}
+    while(next){
+        var parent = await(PostModel.findById(post.parent).exec());
+        if(parent){
+            results.push(parent);
+            next = parent.parent;
+        }
+        next = null;
+    }
+    return results;
+})

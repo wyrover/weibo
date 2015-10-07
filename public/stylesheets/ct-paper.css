@@ -629,6 +629,11 @@ textarea.form-control {
   resize: none;
   padding: 10px 18px; }
 
+textarea.text-sm {
+  font-size: small;
+
+}
+
 .progress {
   background-color: #DDDDDD;
   border-radius: 3px;

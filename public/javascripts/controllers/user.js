@@ -37,19 +37,6 @@ angular.module('app').controller('userCtrl', function(
         });
     }
 
-
-
-
-
-    $scope.getBaseInfo = function(username){
-        var reqData = {
-            username: username
-        }
-        userService.getBaseInfo(reqData).success(function(res){
-            $localStorage.user = res.data;
-        });
-    }
-
     $scope.updateBaseInfo = function(username, newUser){
         var reqData = {
             username: username,
@@ -64,6 +51,8 @@ angular.module('app').controller('userCtrl', function(
 
     }
 
+
+    //-------post
     $scope.publishPost = function(){
         var reqData = {
             username: $localStorage.user.name,
@@ -79,15 +68,22 @@ angular.module('app').controller('userCtrl', function(
         });
     }
 
+    //todo 给转发设置弹出框
     $scope.repost = function(postId){
-        //var reqData = {
-        //    username: $localStorage.user.name,
-        //    post: {
-        //        author: $localStorage.user.name,
-        //        content: $scope.contents,
-        //    }
-        //}
-        console.log('repost')
+        var reqData = {
+            username: $localStorage.user.name,
+            post: {
+                author: $localStorage.user.name,
+                content: $scope.contents.mainPost,
+                parent: postId
+            }
+        }
+
+        publishService.publishPost(reqData).success(function(res){
+            $scope.contents.mainPost = '';
+            $scope.pullFeeds();
+            console.log(res.data);
+        })
     }
 
     /*              methods/comments
@@ -128,32 +124,36 @@ angular.module('app').controller('userCtrl', function(
         })
     }
 
-
-    $scope.replyComment = function(postId, commentId){
+    $scope.replyComment = function(postId, comment){
         var reqData = {
             username: $localStorage.user.name,
             postId: postId,
+            authorName: $localStorage.user.name,
+            parentComment: comment,
             comment: {
-                author: $localStorage.user.name,
-                content: $scope.contents[commentId],
-                parent: commentId
+                content: $scope.contents[comment._id],
+                position: postId+(Date.now().toString()),
+                parent: comment._id
             }
         }
 
         publishService.publishComment(reqData).success(function(res){
             console.log(res);
-            delete $scope.contents[commentId];
+            delete $scope.contents[comment._id];
+            $scope.pullComments(comment._id);
             $scope.pullFeeds();
         })
     }
 
+
+    //-----fo & unfo
     $scope.follow = function(followingName){
         var reqData = {
             username : $localStorage.user.name,
             followingName : followingName
         }
         foService.follow(reqData).success(function(res){
-            $scope.getBaseInfo($localStorage.user.name);
+            userService.syncLocalUserInfo($localStorage.user.name);
         });
     }
 
@@ -163,11 +163,12 @@ angular.module('app').controller('userCtrl', function(
             followingName : followingName
         }
         foService.unfollow(reqData).success(function(res){
-            console.log(res);
-            $scope.getBaseInfo($localStorage.user.name);
+            userService.syncLocalUserInfo($localStorage.user.name);
         })
     }
 
+
+    //-------up & unup
     $scope.upPost = function(postId){
         var reqData = {
             username: $localStorage.user.name,
@@ -175,11 +176,10 @@ angular.module('app').controller('userCtrl', function(
             uper: $localStorage.user.name
         }
         if($scope.feeds.some(function(feed){
-               return feed._id == postId && feed.ups.some(function(u){console.log(u); return u == $localStorage.user.name;});
+               return feed.post._id == postId && feed.post.ups.some(function(u){return u == $localStorage.user.name;});
             })
         ){
             publishService.unUpPost(reqData).success(function(res){
-                console.log(res);
                 $scope.pullFeeds();
             })
         }else{
@@ -189,6 +189,8 @@ angular.module('app').controller('userCtrl', function(
         }
     }
 
+
+    // show
     $scope.showComments = function(postId){
         for(var i = 0; i < $scope.postsShowing.length; i++){
             if($scope.postsShowing[i] == postId){
@@ -196,9 +198,6 @@ angular.module('app').controller('userCtrl', function(
             }
         }
         return false;
-        //return $scope.postsShowing.some(function(p){
-        //        return p == postId
-        //    });
     }
 
     $scope.showFollowButton = function(username){
@@ -231,27 +230,8 @@ angular.module('app').controller('userCtrl', function(
 
     }
 
-    //$scope.hasSitePermission = function(subject, action){
-    //    return authData.hasSitePermission(subject, action);
-    //}
-
     /*              autos
      -------------------------------------*/
     $scope.pullFeeds();
-
-
-
-    //test
-    $scope.test = function(){
-        var reqData = {
-            participants: ["560a096a103725682664937a", "560a094d1037256826649379", "560a08f81037256826649377"],
-            title: '吃早饭'
-        }
-        userService.test(reqData).success(function(err){
-
-        });
-    }
-
-    //$scope.test();
 
 });

@@ -30,6 +30,7 @@ exports.publish = async(function(req, res){
 
         if(parentComment){
             var pcAuthor = await(UserModel.findOne({name: parentComment.author}).exec());
+            comment.parentAuthor = pcAuthor.name;
             errHandler.handleNotFound(pcAuthor, res);
         }
 
