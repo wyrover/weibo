@@ -7,6 +7,7 @@ angular.module('app').controller('userCtrl', function(
     $scope,
     $localStorage,
     $state,
+    ngDialog,
     userService,
     publishService,
     foService){
@@ -69,20 +70,19 @@ angular.module('app').controller('userCtrl', function(
     }
 
     //todo 给转发设置弹出框
-    $scope.repost = function(postId){
+    $scope.repost = function(postId, dialogId){
         var reqData = {
             username: $localStorage.user.name,
             post: {
                 author: $localStorage.user.name,
-                content: $scope.contents.mainPost,
+                content: $scope.contents[postId+'repost'],
                 parent: postId
             }
         }
 
         publishService.publishPost(reqData).success(function(res){
-            $scope.contents.mainPost = '';
-            $scope.pullFeeds();
-            console.log(res.data);
+            delete $scope.contents[postId+'repost'];
+            ngDialog.close(dialogId);
         })
     }
 
@@ -230,8 +230,22 @@ angular.module('app').controller('userCtrl', function(
 
     }
 
+    $scope.showRepostModal = function(){
+        ngDialog.open({
+            template: 'templateId',
+            //className: 'ngDialog-theme-plain'
+        })
+    }
+
     /*              autos
      -------------------------------------*/
     $scope.pullFeeds();
+
+
+    /*              listeners
+     -------------------------------------*/
+    $scope.$on('ngDialog.closed', function(err){
+        $scope.pullFeeds();
+    })
 
 });

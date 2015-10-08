@@ -10,18 +10,20 @@ var PostModel = require('../models').post;
 
 exports.getParents = async(function (post){
     var results = [];
-    if(post.hasOwnProperty('parent')){
-        var next = post.parent;
+    if(post.toObject().hasOwnProperty('parent')){
+        var pre = post.parent;
     }else{
         return results;
     }
-    while(next){
-        var parent = await(PostModel.findById(post.parent).exec());
+    while(pre){
+        var parent = await(PostModel.findById(pre).exec());
         if(parent){
             results.push(parent);
-            next = parent.parent;
+            pre = parent.parent;
+        }else{
+            pre = null;
         }
-        next = null;
+
     }
     return results;
 })

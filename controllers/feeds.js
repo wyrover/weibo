@@ -12,14 +12,21 @@ var constant = require('../constant');
 var PostModel = require('../models').post;
 var UserModel = require('../models').user;
 
-var packFeedToFeeds = function(post, feeds){
-    var parents = postService.getParents(post);
+var packFeedToFeeds = async(function(post, feeds){
+    var parents = await(postService.getParents(post));
+    var origin = undefined;
+    if(parents.length > 0){
+        origin = parents[parents.length-1];
+        parents.splice(parents.length-1, 1);
+    }
+
     var feed = {
         post: post,
-        parents: parents
+        parents: parents,
+        origin: origin
     }
     feeds.push(feed);
-}
+})
 
 exports.pull = async(function(req, res){
     var userId = reqParser.parseProp(req, 'userId');
@@ -34,7 +41,7 @@ exports.pull = async(function(req, res){
         for(var i = 0; i < user.posts.length; i++){
             var post = await(PostModel.findById(user.posts[i]).exec());
             errHandler.handleNotFound(post, res);
-            packFeedToFeeds(post, feeds);
+            await(packFeedToFeeds(post, feeds));
         }
 
 
@@ -44,11 +51,12 @@ exports.pull = async(function(req, res){
             errHandler.handleNotFound(following, res);
             for(var k = 0; k < following.posts.length; k++){
                 var followingPost = await(PostModel.findById(following.posts[k]).exec());
-                errHandler.handleNotFound(followingPost, res);
-                packFeedToFeeds(followingPost, feeds);
+                //errHandler.handleNotFound(followingPost, res);
+                await(packFeedToFeeds(followingPost, feeds));
             }
         }
 
+        //console.log(feeds);
         return res.json({
             data: feeds
         })

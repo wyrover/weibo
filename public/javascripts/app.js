@@ -10,7 +10,8 @@ var app = angular.module('app', [
     'uiRouterStyles',
     //'ui.bootstrap',
     '720kb.tooltips',
-    'flow'
+    'flow',
+    'ngDialog'
 ]);
 
 app.run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams){

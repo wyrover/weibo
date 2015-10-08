@@ -76,40 +76,44 @@
                                         </div>
                                         <small><small>&nbsp;{{feed.post.createDate}}</small></small>
                                     </h5>
-                                    <p>{{feed.post.content}}</p>
+                                    <p>{{feed.post.content}}
+                                        <span ng-repeat="parent in feed.parents">//@<a>{{parent.author}}</a>:{{parent.content}}</span>
+                                    </p>
 
                                     <!-- here is the first post-->
-                                    <div>
+                                    <div ng-if="feed.origin">
+
                                         <hr>
-                                        <small>@陈佩斯<br>
-                                            <small>1小时前</small>
+                                        <small>转发自@<a>{{feed.origin.author}}</a><br>
+                                            <small>{{feed.origin.createDate}}</small>
                                             <p>
 
-                                                <small>我想死你们啦!!!!!!!!!
-                                                    {{feed.parents}}
-                                                    <!--<a tooltips tooltip-title="怎么回事?" tooltip-view="views/tooltip.idCard.html" tooltip-side="bottom">Tooltip me</a>-->
-                                                    <!--<a tooltips tooltip-title="tip" tooltip-side="top">Tooltip me</a>-->
+                                                <small>
+                                                    {{feed.origin.content}}
                                                 </small>
                                             </p>
 
 
 
-                                            <!-- post footer -->
-                                            <ul class="list-inline text-right">
-                                                <li>
-                                                    <small>评论</small>
-                                                </li>
-                                                <li>
-                                                    <small>赞</small>
-                                                </li>
-                                            </ul>
+                                            <!--&lt;!&ndash; post footer &ndash;&gt;-->
+                                            <!--<ul class="list-inline text-right">-->
+                                                <!--<li>-->
+                                                    <!--<small>评论</small>-->
+                                                <!--</li>-->
+                                                <!--<li>-->
+                                                    <!--<small>赞</small>-->
+                                                <!--</li>-->
+                                            <!--</ul>-->
                                         </small>
                                         <hr>
                                     </div>
 
                                     <div>
                                         <div class="col-md-4">
-                                            <a class="btn btn-simple" ng-click="repost(feed.post._id)"><small>转发</small></a>
+                                            <a class="btn btn-simple" ng-dialog="repostModal"
+                                               ng-dialog-controller="userCtrl"
+                                               ng-dialog-data="{{feed.post}}"
+                                               ng-dialog-class="ngdialog-theme-plain"><small>转发</small></a>
                                         </div>
                                         <div class="col-md-6">
                                             <a class="btn btn-simple" ng-click="pullComments(feed.post._id)"><small>评论 {{feed.post.comments.length}}</small></a>
@@ -175,33 +179,35 @@
                             </div>
                             <hr>
                         </li>
-                        <!--<hr/>-->
-                        <!--<li>-->
-                        <!--<div class="row">-->
-                        <!--<div class="col-md-2 col-md-offset-0 col-xs-3 col-xs-offset-2">-->
-                        <!--<img src="../images/examples/banks.jpg" alt="Circle Image"-->
-                        <!--class="img-circle img-no-padding img-responsive">-->
-                        <!--</div>-->
-                        <!--<div class="col-md-7 col-xs-4">-->
-                        <!--<h6>叫我美逼<br>-->
-                        <!--<small>今天 04:32</small>-->
-                        <!--</h6>-->
-                        <!--<p>是谁的眼神锁定我</p>-->
-                        <!--</div>-->
-                        <!--<div class="col-md-3 col-xs-2">-->
-                        <!--<div class="unfollow" rel="tooltip" title="Unfollow">-->
-                        <!--<label class="checkbox" for="checkbox1">-->
-                        <!--<input type="checkbox" value="" id="checkbox1"-->
-                        <!--data-toggle="checkbox" checked>-->
-                        <!--</label>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</li>-->
+
+                        <!-- ul -->
+
                     </ul>
                 </div>
             </div>
 
         </div>
+
+        <!-- modal -->
+        <script type="text/ng-template" id="repostModal">
+            <div class="row">
+                <h4 class="col-md-offset-2">转发微博</h4>
+                <div class="row">
+                    <div class="col-md-9">
+                        <textarea class="form-control text-sm" rows="1" ng-model="contents[ngDialogData._id+'repost']"></textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn" ng-click="repost(ngDialogData._id, ngDialogId)">转发</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="">@{{ngDialogData.author}}: {{ngDialogData.content}}</span>
+                </div>
+            </div>
+
+
+        </script>
+
     </div>
 </div>
+
