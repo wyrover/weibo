@@ -114,6 +114,11 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
             parent: 'dashboard',
             templateUrl: 'views/dashboard/role.html'
         })
+        .state('userManager', {
+            url: '/userManager',
+            parent: 'dashboard',
+            templateUrl: 'views/dashboard/user.html'
+        })
 
 
     ;
