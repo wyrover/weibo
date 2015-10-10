@@ -1,5 +1,5 @@
 <br>
-<div class="content" ng-controller="roleCtrl">
+<div class="content" ng-controller="userAdminCtrl">
     <div class="container-fluid">
         <div class="row">
 
@@ -37,17 +37,44 @@
 
             <div class="col-md-8">
 
+                <div class="card col-md-12">
+
+                    <div class="header">
+                        <div class="form-inline">
+                            <button class=" btn btn-danger btn-link btn-simple col-md-3"><i class="fa fa-feed"></i> 微博历史</button>
+                            <button class=" btn btn-danger btn-link btn-simple col-md-offset-1 col-md-3"><i class="fa fa-users"></i> 他的粉丝</button>
+                            <button class=" btn btn-danger btn-link btn-simple col-md-offset-1 col-md-3"><i class="fa fa-eye"></i> 关注的人</button>
+                        </div>
+                        <br>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+
+                <div class="card col-md-12">
+                    <br>
+                    <div ui-view></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
                 <div class="card">
                     <div class="header">
-                        <h1>woshi</h1>
+                        <h4 class="title">搜索用户</h4>
                     </div>
 
                     <div class="content">
-                        <button>ss</button>
-                    </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="searchInput.username">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="searchUser()">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
 
-                    <div class="footer">
-                        <span>ss</span>
+
+
                     </div>
                 </div>
             </div>

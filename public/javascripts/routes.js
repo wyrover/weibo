@@ -120,6 +120,20 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
             templateUrl: 'views/dashboard/user.html'
         })
 
+        // user manager's sub views
+        .state('postsList', {
+            parent: 'userManager',
+            templateUrl: 'views/dashboard/user/posts.html'
+        })
+        .state('followingsList', {
+            parent: 'userManager',
+            templateUrl: 'views/dashboard/user/followings.html'
+        })
+        .state('followersList', {
+            parent: 'roleManager',
+            templateUrl: 'views/dashboard/user/followers.html'
+        })
+
 
     ;
 

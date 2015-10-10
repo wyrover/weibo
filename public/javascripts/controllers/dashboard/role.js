@@ -40,6 +40,10 @@ angular.module('app').controller('roleCtrl', function($scope, roleService, permi
     }
     //----constant
     $scope.actions = ['只读', '可创建', '可编辑', '可删除', '皆可'];
+
+
+
+
     /*              methods
      -------------------------------------*/
 
