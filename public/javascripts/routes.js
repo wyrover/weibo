@@ -120,6 +120,16 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
             templateUrl: 'views/dashboard/user.html'
         })
 
+        // user manager has/no current user
+        .state('um-nullUser', {
+            parent: 'userManager',
+            templateUrl: 'views/dashboard/user/nullUser.html'
+        })
+        .state('um-hasUser', {
+            parent: 'userManager',
+            templateUrl: 'views/dashboard/user/hasUser.html'
+        })
+
         // user manager's sub views
         .state('postsList', {
             parent: 'userManager',
