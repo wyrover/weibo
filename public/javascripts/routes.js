@@ -68,6 +68,23 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
                     'stylesheets/bootstrap.min.css',]
             }
         })
+        .state('searchUser', {
+            url: '/searchUser',
+            parent: 'nav-bannerStyle',
+            templateUrl: 'views/searchUser.html',
+            data:{
+                css:[
+                    'bower_components/font-awesome/css/font-awesome.min.css',
+                    "stylesheets/dashboard/demo.css",
+                    'stylesheets/banner.css',
+                    'stylesheets/ct-paper.css',
+                    'stylesheets/profile.css',
+                    "stylesheets/dashboard/light-bootstrap-dashboard.css",
+                    "stylesheets/dashboard/animate.min.css",
+                    'stylesheets/bootstrap.min.css'
+                ]
+            }
+        })
         /*      sign
          / ---------------------*/
         .state('sign', {
@@ -132,15 +149,15 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
 
         // user manager's sub views
         .state('postsList', {
-            parent: 'userManager',
+            parent: 'um-hasUser',
             templateUrl: 'views/dashboard/user/posts.html'
         })
         .state('followingsList', {
-            parent: 'userManager',
+            parent: 'um-hasUser',
             templateUrl: 'views/dashboard/user/followings.html'
         })
         .state('followersList', {
-            parent: 'roleManager',
+            parent: 'um-hasUser',
             templateUrl: 'views/dashboard/user/followers.html'
         })
 

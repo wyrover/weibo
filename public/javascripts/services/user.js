@@ -24,6 +24,15 @@ angular.module('app').factory('userService' ,function($http, $localStorage){
         pullFeeds: function(data){
             return $http.get('/user/feeds?username=' + data);
         },
+
+        // 后期我要移到其它地方去
+        getPosts: function(username){
+            return $http.get('/posts?username=' + username);
+        },
+
+        deletePost: function(data){
+            return $http.delete('/post?username=' + data.username + '&postId=' + data.postId)
+        }
     }
 });
 

@@ -24,26 +24,52 @@
 
                         <br>
 
-                        <tr>
-                            <!--<td>-->
-                                <!--<img src="../images/examples/flume.jpg" class="img-rounded img-no-padding img-responsive">-->
-                            <!--</td>-->
 
-                            <td>
-                                <button class="td-actions btn btn-simple btn-sm" ng-click="setCurrentRole(role._id)">
-                                    结果 <a class="fa fa-edit" ng-click="pushSwitch4Panel(role._id)"></a>
-                                </button>
-                            </td>
-
-                            <td class="text-right">
-                                <button class="btn btn-danger btn-sm" ng-click="deleteRole(role.type)">
-                                    删除 <i class="fa fa-remove"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        <div ng-if="searchState == 'notFound'">
+                            抱歉, 该用户不存在
+                        </div>
 
 
 
+
+
+
+                    </div>
+                </div>
+
+                <div class="card" ng-if="searchState == 'found'">
+                    <div class="header">
+
+                        <!-- 头像 -->
+                        <div>
+                            <img src="../images/examples/flume.jpg" alt="Circle Image" class="img-rounded img-no-padding img-responsive">
+                        </div>
+                        <h3>{{currentUser.name}}</h3>
+                        <i class="fa fa-anchor"></i><button class="btn btn-simple"><small>id (不可修改)</small></button>
+                        <br>
+                        <small>{{currentUser._id}}</small>
+                        <br>
+                        <i class="fa fa-envelope-o"></i><button class="btn btn-simple"><small>邮箱</small></button>
+                        <br>
+                        <small>{{currentUser.email}}</small>
+                        <br>
+                        <i class="fa fa-key"></i><button class="btn btn-simple"><small>密码</small></button>
+                        <br>
+                        <small>点击查看</small>
+                        <br>
+                        <i class="fa fa-user"></i><button class="btn btn-simple"><small>权限角色</small></button>
+                        <br>
+                        <small>{{currentUser.role}}</small>
+                        <br>
+                        <i class="fa fa-clock-o"></i><button class="btn btn-simple"><small>加入时间</small></button>
+                        <br>
+                        <small>{{currentUser.createDate}}</small>
+
+                    </div>
+
+                    <div class="footer text-center">
+                        <hr>
+                        <small>点击项目可进行修改</small>
                     </div>
                 </div>
             </div>

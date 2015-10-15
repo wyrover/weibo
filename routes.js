@@ -41,12 +41,18 @@ module.exports = function(app){
      -------------------------------------*/
     app.get('/user/feeds', feeds.pull); // get ones timeline
 
+
+    /*  /post
+     -------------------------------------*/
     app.post('/post', post.publish); // add a post/repost for sb
-    //app.delete('/post'); // delete a post/repost for sb
-    //app.get('/posts'); // get all the posts of sb, when u interview ones home page or admin querys them
+    app.delete('/post', post.deleteOne); // delete a post/repost for sb
+    app.get('/posts', post.getOnesAll); // get all the posts of sb, when u interview ones home page or admin querys them
     app.post('/post/up', post.up); // up ones post
+
     app.delete('/post/up', post.unup); // unUp ones post
 
+    /*  /comment
+     -------------------------------------*/
     app.post('/comment', comment.publish); // add a comment in a  ones post
     //app.delete('/comment'); // delete a comment in a ones post
     //app.get('/comments'); // get all the comments of a post

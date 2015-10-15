@@ -1,1 +1,71 @@
-test
+<div class="header">
+    <h4 class="title"><a>{{currentUser.name}}</a>的所有微博</h4>
+    <!--<button class="btn btn-sm btn-simple" ng-click="pushSwitch4AddPermissionPanel()">-->
+        <!--<i class="fa fa-plus"></i>为该角色添加一个新权限-->
+    <!--</button>-->
+
+
+    <!--<div ng-if="flag2ShowAddPermissionPanel">-->
+        <!--<div class="row">-->
+            <!--<div class="col-md-5">-->
+                <!--<label>-->
+                    <!--<select class="form-control" ng-model="addPermissionInputs.resource">-->
+                        <!--<option ng-repeat="p in permissions" label="{{p.resource}}" value="{{p.resource}}"></option>-->
+                    <!--</select>-->
+                <!--</label>-->
+            <!--</div>-->
+            <!--<div class="col-md-3">-->
+                <!--<label>-->
+                    <!--<select class="form-control" ng-model="addPermissionInputs.action">-->
+                        <!--<option ng-repeat="sp in getSameResourcePermissions(addPermissionInputs.resource)"-->
+                                <!--label="{{sp.action}}" value="{{sp.action}}"></option>-->
+                    <!--</select>-->
+                <!--</label>-->
+            <!--</div>-->
+            <!--<div class="col-md-4 text-right">-->
+                <!--<button class="btn btn-success" ng-click="addPermission()">添加</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+</div>
+<div class="content">
+    <div class="table-full-width">
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>微博id</td>
+                <td>微博文字内容</td>
+                <td>全部评论</td>
+                <td>点赞的人</td>
+                <td class="text-right">删除该微博</td>
+            </tr>
+
+            <tr ng-repeat="weibo in currentUserPosts">
+
+                <td>{{weibo.post._id}}</td>
+                <td>{{weibo.post.content}}</td>
+                <td>评论{{weibo.post.comments.length}}</td>
+                <td>点赞的人{{weibo.post.ups.length}}</td>
+                <td class="text-right">
+                    <button class="btn btn-danger btn-sm">
+                        删除 <i class="fa fa-remove"></i>
+                    </button>
+                </td>
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <hr>
+        <div class="stats">
+            <i class="fa fa-history"></i> Updated 3 minutes ago
+        </div>
+    </div>
+
+</div>
+<!-- content-->

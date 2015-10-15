@@ -1,0 +1,48 @@
+<br>
+<div class="card col-md-6 col-md-offset-3" ng-controller="userCtrl">
+    <br>
+    <div class="header">
+        <h4 class="title"><a>搜索  </a><input class="input-sm form-control" ng-model=""></h4>
+
+
+    </div>
+    <div class="content">
+        <div class="table-full-width">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>微博id</td>
+                    <td>微博文字内容</td>
+                    <td>全部评论</td>
+                    <td>点赞的人</td>
+                    <td class="text-right">删除该微博</td>
+                </tr>
+
+                <tr ng-repeat="weibo in currentUserPosts">
+
+                    <td>{{weibo.post._id}}</td>
+                    <td>{{weibo.post.content}}</td>
+                    <td>评论{{weibo.post.comments.length}}</td>
+                    <td>点赞的人{{weibo.post.ups.length}}</td>
+                    <td class="text-right">
+                        <button class="btn btn-danger btn-sm">
+                            删除 <i class="fa fa-remove"></i>
+                        </button>
+                    </td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <hr>
+            <div class="stats">
+                <i class="fa fa-history"></i> Updated 3 minutes ago
+            </div>
+        </div>
+
+    </div>
+    <!-- content-->
+</div>
