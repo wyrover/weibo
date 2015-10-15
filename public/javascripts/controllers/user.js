@@ -18,7 +18,8 @@ angular.module('app').controller('userCtrl', function(
     //todo 如果有空的话改一下这个名字, 不仅仅存放了showing的postId, commentId也放进来了.
     $scope.postsShowing = [];
     $scope.contents = {
-        mainPost: ''
+        mainPost: '',
+        searchUser: ''
     };
 
     /*              methods
