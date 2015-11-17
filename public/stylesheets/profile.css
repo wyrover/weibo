@@ -4,7 +4,7 @@
     background-size: cover;
     height: 300px;
     margin-top: -106px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     width: 100%;
 }
 .profile-background .filter-black::after{
