@@ -6,4 +6,4 @@ Maybe fucking ugly...
 
 # Todos
 * webpack instead
-* ng-flow
+* add ng-flow
