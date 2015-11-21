@@ -36,7 +36,6 @@ exports.pull = async(function(req, res){
         var user = await(userService.getUserByIdOrName(userId, username));
         errHandler.handleNotFound(user, res);
 
-        //collect self
         var feeds = [];
         for(var i = 0; i < user.posts.length; i++){
             var post = await(PostModel.findById(user.posts[i]).exec());
@@ -44,19 +43,15 @@ exports.pull = async(function(req, res){
             await(packFeedToFeeds(post, feeds));
         }
 
-
-        // collect followings
         for(var j = 0; j < user.followings.length; j++){
             var following = await(UserModel.findOne({name: user.followings[j]}).exec());
             errHandler.handleNotFound(following, res);
             for(var k = 0; k < following.posts.length; k++){
                 var followingPost = await(PostModel.findById(following.posts[k]).exec());
-                //errHandler.handleNotFound(followingPost, res);
                 await(packFeedToFeeds(followingPost, feeds));
             }
         }
 
-        //console.log(feeds);
         return res.json({
             data: feeds
         })
