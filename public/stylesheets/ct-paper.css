@@ -2642,3 +2642,16 @@ textarea.text-sm {
 .datepicker-months thead {
   padding: 0 0 3px;
   display: block; }
+
+/*自定义的*/
+.bg-blue{
+  background-color: #c4e3f3;
+}
+
+.text-blue{
+  color: #c4e3f3;
+}
+
+.long-holder{
+  width: 90%;
+}

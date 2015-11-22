@@ -2,15 +2,22 @@
 <div class="card col-md-6 col-md-offset-3" ng-controller="userCtrl">
     <br>
     <div class="header">
-        <h4 class="title"><a>搜索  </a><textarea class="form-control" rows="1" ng-model="contents.searchUser"></textarea></h4>
+        <div class="row">
+            <h4 class="title">搜索用户</h4>
+            <br>
+            <input class="col-md-10 form-control long-holder bg-blue" rows="1" ng-model="contents.searchUser">
+            <button class="btn btn-simple" ng-click=""><i class="fa fa-search"></i></button>
+        </div>
+
+
 
 
     </div>
     <div class="content">
         <div class="table-full-width">
             <table class="table">
-                <tbody>
-                <tr>
+                <tbody ng-switch="searchResult">
+                <tr >
                     <td>微博id</td>
                     <td>微博文字内容</td>
                     <td>全部评论</td>

@@ -24,6 +24,7 @@
     "moment": "~2.10.6",
     "ng-flow": "~2",
     "ngstorage": "~0.3.9",
-    "ng-dialog": "~0.5.5"
+    "ng-dialog": "~0.5.5",
+    "angular-moment": "~1.0.0-beta.3"
   }
 }

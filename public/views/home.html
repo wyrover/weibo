@@ -9,7 +9,7 @@
                     <textarea class="form-control" rows="4" ng-model="contents.mainPost"></textarea>
                     <br>
                     <div class="form-inline">
-                        <button class="btn btn-sm">图片</button>
+                        <button class="btn btn-sm" ng-click="">图片</button>
                         <button class="btn btn-sm">视频</button>
                         <button class="btn btn-sm">音乐</button>
                         <button class="btn btn-sm btn-info col-md-offset-7" ng-click="publishPost()">发布</button>
@@ -74,7 +74,7 @@
                                             <a class="btn btn-sm btn-simple" ng-if="showFollowButton(feed.post.author)" ng-click="follow(feed.post.author)">关注</a>
                                             <a class="btn btn-sm btn-simple" ng-if="showUnFollowButton(feed.post.author)" ng-click="unFollow(feed.post.author)">取消关注</a>
                                         </div>
-                                        <small><small>&nbsp;{{feed.post.createDate}}</small></small>
+                                        <small><small>&nbsp;<span>{{feed.post.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</span> </small></small>
                                     </h5>
                                     <p>{{feed.post.content}}
                                         <span ng-repeat="parent in feed.parents">//@<a>{{parent.author}}</a>:{{parent.content}}</span>
@@ -85,7 +85,7 @@
 
                                         <hr>
                                         <small>转发自@<a>{{feed.origin.author}}</a><br>
-                                            <small>{{feed.origin.createDate}}</small>
+                                            <small>{{feed.origin.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</small>
                                             <p>
 
                                                 <small>
@@ -150,7 +150,7 @@
                                                 <a>@{{comment.author}}</a> <span ng-if="comment.parent">回复<a>@{{comment.parentAuthor}}</a></span> : {{comment.content}}
                                             </small>
                                             <small class="col-lg-10">
-                                                <small>{{comment.createDate}}</small>
+                                                <small>{{comment.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</small>
                                             </small>
                                             <!-- todo a 标签的语义化 处理-->
                                             <a class="col-lg-2 text-right" href="" ng-click="pullComments(comment._id)">

@@ -70,6 +70,8 @@ angular.module('app').controller('userCtrl', function(
         });
     }
 
+
+
     //todo 给转发设置弹出框
     $scope.repost = function(postId, dialogId){
         var reqData = {

@@ -11,7 +11,8 @@ var app = angular.module('app', [
     //'ui.bootstrap',
     '720kb.tooltips',
     'flow',
-    'ngDialog'
+    'ngDialog',
+    'angularMoment'
 ]);
 
 app.run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams){
