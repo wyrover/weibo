@@ -1,54 +1,36 @@
 <br>
-<div class="card col-md-6 col-md-offset-3" ng-controller="userCtrl">
-    <br>
+<h3 class="title text-center">搜索</h3>
+<br>
+<div class="card col-md-6 col-md-offset-3" ng-controller="searchCtrl">
+
     <div class="header">
         <div class="row">
-            <h4 class="title">搜索用户</h4>
             <br>
-            <input class="col-md-10 form-control long-holder bg-blue" rows="1" ng-model="contents.searchUser">
-            <button class="btn btn-simple" ng-click=""><i class="fa fa-search"></i></button>
+            <input class="col-md-10 form-control long-holder bg-blue" rows="1" ng-model="searchingInput" placeholder="请输入用户名">
+            <button class="btn btn-simple" ng-click="search()"><i class="fa fa-search"></i></button>
         </div>
-
-
-
-
     </div>
-    <div class="content">
-        <div class="table-full-width">
-            <table class="table">
-                <tbody ng-switch="searchResult">
-                <tr >
-                    <td>微博id</td>
-                    <td>微博文字内容</td>
-                    <td>全部评论</td>
-                    <td>点赞的人</td>
-                    <td class="text-right">删除该微博</td>
-                </tr>
-
-                <tr ng-repeat="weibo in currentUserPosts">
-
-                    <td>{{weibo.post._id}}</td>
-                    <td>{{weibo.post.content}}</td>
-                    <td>评论{{weibo.post.comments.length}}</td>
-                    <td>点赞的人{{weibo.post.ups.length}}</td>
-                    <td class="text-right">
-                        <button class="btn btn-danger btn-sm">
-                            删除 <i class="fa fa-remove"></i>
-                        </button>
-                    </td>
-                </tr>
 
 
-                </tbody>
-            </table>
-        </div>
-
-        <div class="footer">
+    <div class="content" ng-switch="searchedResult">
+        <div class="row" ng-switch-when="found">
             <hr>
-            <div class="stats">
-                <i class="fa fa-history"></i> Updated 3 minutes ago
+            <div class="col-md-2 col-md-offset-0 col-xs-3 col-xs-offset-2">
+                <!--  头像 -->
+                <img src="../images/examples/flume.jpg" class="img-no-padding img-responsive">
+            </div>
+
+            <div class="col-md-10 col-xs-4">
+                <a>{{searchedUser.name}}</a>
+                <a class="btn btn-simple" ng-if="showFollowButton(searchedUser.name)" ng-click="follow(searchedUser.name)">关注</a>
+                <a class="btn btn-sm btn-simple" ng-if="showUnFollowButton(searchedUser.name)" ng-click="unFollow(searchedUser.name)">取消关注</a>
+                <p>介绍: {{searchedUser.signature || '&nbsp;&nbsp;无'}}</p>
+                <a>粉丝: </a>{{searchedUser.followers.length}} &nbsp;
+                <a>微博: </a>{{searchedUser.posts.length}}
             </div>
         </div>
+
+        <p ng-switch-when="notFound">抱歉, 你所查找的用户不存在!</p>
 
     </div>
     <!-- content-->

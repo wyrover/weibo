@@ -31,17 +31,16 @@
                             <!--</div>-->
 
 
-
                             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                                 <li><a>&nbsp;&nbsp;关注&nbsp;&nbsp;</a>
 
-                                    <p>11</p></li>
+                                    <p>{{currentUser.followings.length}}</p></li>
                                 <li><a>&nbsp;&nbsp;粉丝&nbsp;&nbsp;</a>
 
-                                    <p>36</p></li>
+                                    <p>{{currentUser.followers.length}}</p></li>
                                 <li><a>&nbsp;&nbsp;微博&nbsp;&nbsp;</a>
 
-                                    <p>79</p></li>
+                                    <p>{{currentUser.posts.length}}</p></li>
                             </ul>
 
 
@@ -188,24 +187,20 @@
 
         </div>
 
-        <!-- modal -->
+        <!-- repost modal -->
         <script type="text/ng-template" id="repostModal">
-            <div class="row">
-                <h4 class="col-md-offset-2">转发微博</h4>
-                <div class="row">
-                    <div class=" col-md-offset-1 col-md-8">
-                        <textarea class="form-control text-sm" rows="1" ng-model="contents[ngDialogData._id+'repost']"></textarea>
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn" ng-click="repost(ngDialogData._id, ngDialogId)">转发</button>
-                    </div>
+            <h4 class="text-center">转发微博</h4>
+            <p>@{{ngDialogData.author}}: {{ngDialogData.content}}</p>
+            <div class="row card">
+
+                <div class="header">
+                    <input class="col-md-9 form-control meduim-holder bg-blue" placeholder="请输入转发理由" ng-model="contents[ngDialogData._id+'repost']">
+                    <button class="col-md-offset-1 col-md-2 btn" ng-click="repost(ngDialogData._id, ngDialogId)"><small>转发</small></button>
+                    <br>
+                    <br>
                 </div>
-                <div>
-                    <span class="">@{{ngDialogData.author}}: {{ngDialogData.content}}</span>
-                </div>
+
             </div>
-
-
         </script>
 
     </div>

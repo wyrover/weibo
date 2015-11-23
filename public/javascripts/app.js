@@ -12,7 +12,8 @@ var app = angular.module('app', [
     '720kb.tooltips',
     'flow',
     'ngDialog',
-    'angularMoment'
+    'angularMoment',
+    //'yaru22.hovercard'
 ]);
 
 app.run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams){

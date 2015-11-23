@@ -48,6 +48,7 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
                     'stylesheets/banner.css',
                     'stylesheets/profile.css',
                     'stylesheets/ct-paper.css',
+                    "stylesheets/dashboard/light-bootstrap-dashboard.css",
                     'stylesheets/bootstrap.min.css',
                      ]
             }

@@ -39,12 +39,14 @@ angular.module('app').controller('signCtrl', function(
         signService.signIn(reqData).success(function(res){
             $localStorage.token = res.data.token;
             $localStorage.user = res.data;
+            notie.alert(1, '登陆成功!', 1.5);
             $state.go('home');
         });
     }
 
     $scope.signUp = function(){
         signService.signUp($scope.signInputs).success(function(res){
+            notie.alert(3, '注册成功!', 1.5);
             $state.go('signIn');
         });
     }

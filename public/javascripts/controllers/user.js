@@ -19,11 +19,18 @@ angular.module('app').controller('userCtrl', function(
     $scope.postsShowing = [];
     $scope.contents = {
         mainPost: '',
-        searchUser: ''
     };
+    $scope.currentUser = $localStorage.user;
 
     /*              methods
      -------------------------------------*/
+
+    // -------redirect----
+    $scope.visitHomePage = function(username){
+        //userService.getBaseInfo(username)
+    }
+
+
 
     //--------feeds-------
     $scope.pullFeeds = function(){
@@ -63,9 +70,16 @@ angular.module('app').controller('userCtrl', function(
                 content: $scope.contents.mainPost,
             }
         }
+
+        if(!reqData.post.content){
+            notie.alert(3, '请先输入内容', 1.5);
+            return;
+        }
+
         publishService.publishPost(reqData).success(function(res){
             $scope.contents.mainPost = '';
             $scope.pullFeeds();
+            notie.alert(1, '发布成功', 1.5);
             console.log(res.data);
         });
     }
@@ -83,9 +97,15 @@ angular.module('app').controller('userCtrl', function(
             }
         }
 
+        if(!reqData.post.content){
+            notie.alert(3, '请先输入内容', 1.5);
+            return;
+        }
+
         publishService.publishPost(reqData).success(function(res){
             delete $scope.contents[postId+'repost'];
             ngDialog.close(dialogId);
+            notie.alert(1, '转发成功', 1.5);
         })
     }
 
@@ -120,10 +140,16 @@ angular.module('app').controller('userCtrl', function(
             }
         }
 
+        if(!reqData.comment.content){
+            notie.alert(3, '请先输入内容', 1.5);
+            return;
+        }
+
         publishService.publishComment(reqData).success(function(res){
             console.log(res);
             delete $scope.contents[postId];
             $scope.pullFeeds();
+            notie.alert(1, '评论成功', 1.5);
         })
     }
 
@@ -140,11 +166,17 @@ angular.module('app').controller('userCtrl', function(
             }
         }
 
+        if(!reqData.comment.content){
+            notie.alert(3, '请先输入内容', 1.5);
+            return;
+        }
+
         publishService.publishComment(reqData).success(function(res){
             console.log(res);
             delete $scope.contents[comment._id];
             $scope.pullComments(comment._id);
             $scope.pullFeeds();
+            notie.alert(1, '回复成功', 1.5);
         })
     }
 
@@ -250,5 +282,4 @@ angular.module('app').controller('userCtrl', function(
     $scope.$on('ngDialog.closed', function(err){
         $scope.pullFeeds();
     })
-
 });
