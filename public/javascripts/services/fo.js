@@ -12,7 +12,7 @@ angular.module('app').factory('foService' ,function($http){
 
         unfollow: function(data){
             return $http.delete('/following?username=' + data.username + '&followingName=' + data.followingName);
-        },
+        }
 
 
     }

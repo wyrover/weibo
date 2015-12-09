@@ -16,7 +16,7 @@ angular.module('app').factory('signService' ,function($http){
 
         signUp: function(data){
             return $http.post('/sign',data);
-        },
+        }
 
 
     }

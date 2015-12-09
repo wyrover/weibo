@@ -23,12 +23,12 @@ module.exports = function(app){
 
     /*  /sign
      -------------------------------------*/
-    app.get('/sign', user.signIn); // sign in
+    app.get('/sign', user.signIn);  // sign in
     app.post('/sign', user.signUp); // sign up
 
     /*  /user
      -------------------------------------*/
-    app.get('/user', user.getBaseInfo); // get user_base_info
+    app.get('/user', user.getBaseInfo);      // get user_base_info
     //app.put('/user', user.updateBaseInfo); // update user_base_info
     //app.delete('/user');
     //
@@ -39,41 +39,41 @@ module.exports = function(app){
 
     /*  /user/{{prop}}
      -------------------------------------*/
-    app.get('/user/feeds', feeds.pull); // get ones timeline
+    app.get('/user/feeds', feeds.pull);     // get ones timeline
 
 
     /*  /post
      -------------------------------------*/
-    app.post('/post', post.publish); // add a post/repost for sb
-    app.delete('/post', post.deleteOne); // delete a post/repost for sb
-    app.get('/posts', post.getOnesAll); // get all the posts of sb, when u interview ones home page or admin querys them
-    app.post('/post/up', post.up); // up ones post
+    app.post('/post', post.publish);        // add a post/repost for sb
+    app.delete('/post', post.deleteOne);    // delete a post/repost for sb
+    app.get('/posts', post.getOnesAll);     // get all the posts of sb, when u interview ones home page or admin querys them
+    app.post('/post/up', post.up);          // up ones post
 
-    app.delete('/post/up', post.unup); // unUp ones post
+    app.delete('/post/up', post.unup);      // unUp ones post
 
     /*  /comment
      -------------------------------------*/
-    app.post('/comment', comment.publish); // add a comment in a  ones post
-    //app.delete('/comment'); // delete a comment in a ones post
-    //app.get('/comments'); // get all the comments of a post
-    //app.post('/comment/up'); // up a comment
-    //app.delete('comment/up'); // unUp a comment
+    app.post('/comment', comment.publish);  // add a comment in a  ones post
+    //app.delete('/comment');               // delete a comment in a ones post
+    //app.get('/comments');                 // get all the comments of a post
+    //app.post('/comment/up');              // up a comment
+    //app.delete('comment/up');             // unUp a comment
     //
-    //app.post('/notification'); // add a notification to sb
-    //app.delete('/notification'); // delete a notification
-    //app.put('/notification/status'); // turn a notification to other status
+    //app.post('/notification');            // add a notification to sb
+    //app.delete('/notification');          // delete a notification
+    //app.put('/notification/status');      // turn a notification to other status
 
-    app.post('/following', interaction.follow); // follow sb
-    app.delete('/following', interaction.unfollow); // unfollow sb
+    app.post('/following', interaction.follow);      // follow sb
+    app.delete('/following', interaction.unfollow);  // unfollow sb
     //
-    //app.delete('/follower'); // delete a fan
+    //app.delete('/follower');                       // delete a fan
 
 
     /*  /role
      -------------------------------------*/
-    //app.get('/role'); // get role and its permissions info
-    app.post('/role', role.create); // create a new role type
-    app.put('/role', role.changeName); // update all permissions or type value
+    //app.get('/role');                      // get role and its permissions info
+    app.post('/role', role.create);          // create a new role type
+    app.put('/role', role.changeName);       // update all permissions or type value
     app.delete('/role', role.delete);
 
     app.post('/role/permission', role.addPermission);
@@ -85,7 +85,7 @@ module.exports = function(app){
 
     /*  /permission
      -------------------------------------*/
-    app.post('/permission', permission.create); // add a permission
+    app.post('/permission', permission.create);   // add a permission
     app.delete('/permission', permission.delete); // delete a permission, also delete it in all roles' permissions
 
     /*  /permissions

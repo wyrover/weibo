@@ -13,6 +13,9 @@ angular.module('app').controller('userCtrl', function(
     foService){
     /*              models
      -------------------------------------*/
+    var page = 0;
+    $scope.totalFeeds = [];
+    $scope.feedBox = [];
     $scope.feeds = [];
 
     //todo 如果有空的话改一下这个名字, 不仅仅存放了showing的postId, commentId也放进来了.
@@ -31,7 +34,6 @@ angular.module('app').controller('userCtrl', function(
     }
 
 
-
     //--------feeds-------
     $scope.pullFeeds = function(){
         userService.pullFeeds($localStorage.user.name).success(function(res){
@@ -43,8 +45,80 @@ angular.module('app').controller('userCtrl', function(
                     return 1;
                 }
             });
+
+        });
+        //userService.pullFeeds($localStorage.user.name).success(function(res){
+        //    $scope.totalFeeds = res.data.sort(function(a, b){
+        //        if(Date.parse(a.post.createDate) >= Date.parse(b.post.createDate)){
+        //            return -1;
+        //        }
+        //        else{
+        //            return 1;
+        //        }
+        //    });
+        //
+        //});
+    }
+
+    //$scope.$watch('totalFeeds', function(o, n){
+    //    if(o !== n){
+    //        console.log($scope.flag);
+    //        console.log("changed");
+    //
+    //        var temp = $scope.totalFeeds.slice();
+    //        console.log(temp);
+    //        while(temp.length > 20){
+    //            var arr = temp.splice(0, 20); // 截取20个元素
+    //            $scope.feedBox.push(arr);
+    //        }
+    //        if(temp.length > 0){
+    //            $scope.feedBox.push(temp);
+    //            $scope.feeds = $scope.feedBox[0];
+    //        }
+    //    }
+    //})
+
+    // $localStorage.user.name
+
+    var getFeeds = function(name){
+        userService.pullFeeds(name).success(function(res){
+            $scope.feeds = res.data.sort(function(a, b){
+                if(Date.parse(a.post.createDate) >= Date.parse(b.post.createDate)){
+                    return -1;
+                }
+                else{
+                    return 1;
+                }
+            });
         });
     }
+
+    //var parseFeeds = function(datas){
+    //    var data = datas.slice();
+    //    for(var i = 0; i < data.length -1; i++){
+    //        for(var  j = 0; j < data.length - i -1; j++){
+    //            if(data[j].post.createDate > data[j+1].post.createDate){
+    //                var cache = data[j];
+    //                data[j+1] = cache;
+    //            }
+    //        }
+    //    }
+    //    console.log("data", data);
+    //    $scope.totalFeeds = data;
+    //}
+    //
+    //var feedsHandler = function(){
+    //    var temp = $scope.totalFeeds.slice();
+    //    console.log(temp);
+    //    while(temp.length > 20){
+    //        var arr = temp.splice(0, 20); // 截取20个元素
+    //        $scope.feedBox.push(arr);
+    //    }
+    //    if(temp.length > 0){
+    //        $scope.feedBox.push(temp);
+    //        $scope.feeds = $scope.feedBox[0];
+    //    }
+    //}
 
     $scope.updateBaseInfo = function(username, newUser){
         var reqData = {
@@ -209,7 +283,7 @@ angular.module('app').controller('userCtrl', function(
             username: $localStorage.user.name,
             postId: postId,
             uper: $localStorage.user.name
-        }
+        };
         if($scope.feeds.some(function(feed){
                return feed.post._id == postId && feed.post.ups.some(function(u){return u == $localStorage.user.name;});
             })
@@ -222,7 +296,7 @@ angular.module('app').controller('userCtrl', function(
                 $scope.pullFeeds();
             })
         }
-    }
+    };
 
 
     // show
@@ -233,7 +307,7 @@ angular.module('app').controller('userCtrl', function(
             }
         }
         return false;
-    }
+    };
 
     $scope.showFollowButton = function(username){
         if(username == $localStorage.user.name){
@@ -249,7 +323,7 @@ angular.module('app').controller('userCtrl', function(
         return true;
 
         //return username != 'honeycomb';
-    }
+    };
 
     $scope.showUnFollowButton = function(username){
         if(username == $localStorage.user.name){
@@ -263,14 +337,14 @@ angular.module('app').controller('userCtrl', function(
         }
         return false;
 
-    }
+    };
 
     $scope.showRepostModal = function(){
         ngDialog.open({
             template: 'templateId',
             //className: 'ngDialog-theme-plain'
         })
-    }
+    };
 
     /*              autos
      -------------------------------------*/
@@ -281,5 +355,11 @@ angular.module('app').controller('userCtrl', function(
      -------------------------------------*/
     $scope.$on('ngDialog.closed', function(err){
         $scope.pullFeeds();
-    })
+    });
+
+    $scope.$on('pullFeeds', function(){
+        $scope.pullFeeds();
+    });
+
+
 });
