@@ -26,7 +26,7 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
         })
         .state('nav-bannerStyle', {
             parent: 'root',
-            templateUrl: 'views/nav.bannerStyle.html'
+            templateUrl: 'views/nav.bannerStyle.html',
         })
         .state('nav-bannerStyle-outLogged', {
             parent: 'root',
@@ -44,11 +44,8 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
                     'bower_components/ng-dialog/css/ngDialog.css',
                     'bower_components/angular-tooltips/src/css/angular-tooltips.css',
                     'bower_components/font-awesome/css/font-awesome.min.css',
-                    'stylesheets/footer.css',
+                    'stylesheets/home.css',
                     'stylesheets/banner.css',
-                    'stylesheets/profile.css',
-                    'stylesheets/ct-paper.css',
-                    "stylesheets/dashboard/light-bootstrap-dashboard.css",
                     'stylesheets/bootstrap.min.css',
                      ]
             }
@@ -64,8 +61,6 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
                     'stylesheets/footer.css',
                     'stylesheets/banner.css',
                     'stylesheets/profile.css',
-                    'stylesheets/mypage.css',
-                    //'stylesheets/ct-paper.css',
                     'stylesheets/bootstrap.min.css',]
             }
         })
@@ -78,10 +73,6 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
                     'bower_components/font-awesome/css/font-awesome.min.css',
                     "stylesheets/dashboard/demo.css",
                     'stylesheets/banner.css',
-                    'stylesheets/ct-paper.css',
-                    'stylesheets/profile.css',
-                    "stylesheets/dashboard/light-bootstrap-dashboard.css",
-                    "stylesheets/dashboard/animate.min.css",
                     'stylesheets/bootstrap.min.css'
                 ]
             }
@@ -164,8 +155,4 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
 
 
     ;
-
-
-
-
 }])

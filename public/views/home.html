@@ -1,208 +1,182 @@
-<div class="profile-content section-nude">
-    <div class="container" ng-controller="userCtrl">
+<div class="container" ng-controller="userCtrl">
+    <div class="weibo">
+        <!-- 主体栏 -->
+        <main>
+            <!--   发微博框   -->
+            <header class="publish-box">
+                <textarea class="form-control" ng-model="contents.mainPost"></textarea>
 
-        <div class="profile-tabs">
-            <div class="row">
+                <ul>
+                    <li>
+                        <button class="btn btn-default">图片</button>
+                    </li>
+                    <li>
+                        <button class="btn btn-default">视频</button>
+                    </li>
+                    <li>
+                        <button class="btn btn-default">音乐</button>
+                    </li>
+                </ul>
 
-                <!--   输入框   -->
-                <div class="col-lg-6 col-md-offset-2">
-                    <textarea class="form-control" rows="4" ng-model="contents.mainPost"></textarea>
-                    <br>
-                    <div class="form-inline">
-                        <button class="btn btn-sm" ng-click="">图片</button>
-                        <button class="btn btn-sm">视频</button>
-                        <button class="btn btn-sm">音乐</button>
-                        <button class="btn btn-sm btn-info col-md-offset-7" ng-click="publishPost()">发布</button>
-                    </div>
-                </div>
+                <button class="btn btn-danger" ng-click="publishPost()">发布</button>
+            </header>
 
-                <!--  名片  -->
-                <div class="col-lg-4">
+            <!-- 微博 -->
+            <article class="feed" ng-repeat="feed in feeds">
+                <!-- 微博主体内容, 包括发布者, 发布内容和发布人 -->
+                <section class="feed-main">
+                    <aside>
+                        <img src="../images/examples/flume.jpg" class="img-responsive">
+                    </aside>
 
-                    <div class="nav-tabs-navigation">
-                        <div class="nav-tabs-wrapper">
+                    <article>
+                        <header>
+                            <a>{{feed.post.author}}</a>
+                            <time>{{feed.post.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</time>
+                        </header>
 
-                            <!-- todo 在这里做一个名片, 身份信息等各种资料的展示-->
+                        <p>{{feed.post.content}}
+                            <span ng-repeat="parent in feed.parents">//@<a>{{parent.author}}</a>:{{parent.content}}</span>
+                        </p>
 
-                            <!--<div flow-init>-->
-                                <!--<img src="/images/examples/chet_faker_1.jpg"-->
-                                     <!--class="img-rounded img-responsive" tooltips tooltip-side="right" tooltip-content="点击更新头像"-->
-                                     <!--flow-btn>-->
-                            <!--</div>-->
+                        <!-- 原博 -->
+                        <article class="feed-origin" ng-if="feed.origin">
+                            <header>
+                                <a>@{{feed.origin.author}}</a>
+                            </header>
+                            <p>{{feed.origin.content}}</p>
+                            <footer>
+                                <time>{{feed.origin.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</time>
+                                <ul>
+                                    <li>赞</li>
+                                    <li>评论</li>
+                                    <li>转发</li>
+                                </ul>
+                            </footer>
+                        </article>
+                    </article>
 
+                    <!-- 微博页脚, 处理转发, 评论, 赞  -->
+                    <footer>
+                        <ul>
+                            <li>
+                                <a ng-dialog="repostModal"
+                                   ng-dialog-controller="userCtrl"
+                                   ng-dialog-data="{{feed.post}}"
+                                   ng-dialog-class="ngdialog-theme-plain">
+                                    转发
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-click="pullComments(feed.post._id)">评论 {{feed.post.comments.length}}</a>
+                            </li>
+                            <li>
+                                <a ng-click="upPost(feed.post._id)">
+                                    <i class="fa fa-thumbs-up"></i>
+                                    {{feed.post.ups.length}}
+                                </a>
+                            </li>
+                        </ul>
+                    </footer>
+                </section>
 
-                            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                                <li><a>&nbsp;&nbsp;关注&nbsp;&nbsp;</a>
+                <!-- 微博评论列表 -->
+                <section class="feed-comments-list" ng-if="showComments(feed.post._id)">
+                    <!-- 评论框 -->
+                    <header>
+                        <img src="../images/examples/flume.jpg" class="img-responsive">
+                        <textarea maxlength="140" ng-model="contents[feed.post._id]"></textarea>
+                        <button class="btn btn-danger" ng-click="publishComment(feed.post._id)">评论</button>
+                    </header>
 
-                                    <p>{{currentUser.followings.length}}</p></li>
-                                <li><a>&nbsp;&nbsp;粉丝&nbsp;&nbsp;</a>
+                    <!-- 评论列表 -->
+                    <section class="feed-comment-box" ng-repeat="comment in feed.post.comments">
+                        <aside>
+                            <img src="../images/examples/flume.jpg" class="img-responsive">
+                        </aside>
 
-                                    <p>{{currentUser.followers.length}}</p></li>
-                                <li><a>&nbsp;&nbsp;微博&nbsp;&nbsp;</a>
-
-                                    <p>{{currentUser.posts.length}}</p></li>
+                        <article class="feed-comment">
+                            <!-- 评论主体, 包括内容和处理项  -->
+                            <p><a>@{{comment.author}}</a> <span
+                                    ng-if="comment.parent">回复<a>@{{comment.parentAuthor}}</a></span> :
+                                {{comment.content}}</p>
+                            <time>{{comment.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</time>
+                            <ul>
+                                <li>
+                                    <a ng-click="pullComments(comment._id)">回复</a>
+                                </li>
+                                <li>
+                                    赞
+                                </li>
                             </ul>
 
+                            <!-- 回复框 -->
+                            <section ng-if="showComments(comment._id)">
+                                <textarea ng-model="contents[comment._id]"></textarea>
+                                <button class="btn btn-danger" ng-click="replyComment(feed.post._id, comment)">评论
+                                </button>
+                            </section>
+                        </article>
+                    </section>
+                </section>
+            </article>
 
-                        </div>
-                    </div>
+            <!-- todo 分页 -->
+            <footer>
 
+            </footer>
 
-                </div>
+        </main>
 
-            </div>
+        <!-- 侧边栏 用户名片  -->
+        <aside class="user-info-card">
+            <header>
+                <img src="../images/examples/flume.jpg" class="img-circle img-responsive">
+                <h4>{{currentUser.name}}</h4>
+            </header>
 
-            <div class="row">
+            <footer>
+                <ul>
+                    <li>
+                        <h4>{{currentUser.followings.length}}</h4>
+                        <h4>关注</h4>
+                    </li>
+                    <li>
+                        <h4>{{currentUser.followers.length}}</h4>
+                        <h4>粉丝</h4>
+                    </li>
+                    <li>
+                        <h4>{{currentUser.posts.length}}</h4>
+                        <h4>微博</h4>
+                    </li>
+                </ul>
+            </footer>
+        </aside>
 
-                <div class="col-md-6 col-md-offset-2">
-                    <hr>
-                    <ul class="list-unstyled">
-                        <!--{{feeds}}-->
-                        <li ng-repeat="feed in feeds">
-                            <div class="row">
-                                <div class="col-md-2 col-md-offset-0 col-xs-3 col-xs-offset-2">
+        <!-- todo 页脚内容 -->
+        <footer>
 
-                                    <!--  头像 -->
-                                    <img src="../images/examples/flume.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
-
-                                </div>
-                                <div class="col-md-10 col-xs-4">
-                                    <h5>
-                                        <div>
-                                            <a>{{feed.post.author}}</a>
-                                            <a class="btn btn-sm btn-simple" ng-if="showFollowButton(feed.post.author)" ng-click="follow(feed.post.author)">关注</a>
-                                            <a class="btn btn-sm btn-simple" ng-if="showUnFollowButton(feed.post.author)" ng-click="unFollow(feed.post.author)">取消关注</a>
-                                        </div>
-                                        <small><small>&nbsp;<span>{{feed.post.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</span> </small></small>
-                                    </h5>
-                                    <p>{{feed.post.content}}
-                                        <span ng-repeat="parent in feed.parents">//@<a>{{parent.author}}</a>:{{parent.content}}</span>
-                                    </p>
-
-                                    <!-- here is the first post-->
-                                    <div ng-if="feed.origin">
-
-                                        <hr>
-                                        <small>转发自@<a>{{feed.origin.author}}</a><br>
-                                            <small>{{feed.origin.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</small>
-                                            <p>
-
-                                                <small>
-                                                    {{feed.origin.content}}
-                                                </small>
-                                            </p>
-
-
-
-                                            <!--&lt;!&ndash; post footer &ndash;&gt;-->
-                                            <!--<ul class="list-inline text-right">-->
-                                                <!--<li>-->
-                                                    <!--<small>评论</small>-->
-                                                <!--</li>-->
-                                                <!--<li>-->
-                                                    <!--<small>赞</small>-->
-                                                <!--</li>-->
-                                            <!--</ul>-->
-                                        </small>
-                                        <hr>
-                                    </div>
-
-                                    <div>
-                                        <div class="col-md-4">
-                                            <a class="btn btn-simple" ng-dialog="repostModal"
-                                               ng-dialog-controller="userCtrl"
-                                               ng-dialog-data="{{feed.post}}"
-                                               ng-dialog-class="ngdialog-theme-plain"><small>转发</small></a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a class="btn btn-simple" ng-click="pullComments(feed.post._id)"><small>评论 {{feed.post.comments.length}}</small></a>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <a class="btn btn-simple" ng-click="upPost(feed.post._id)"><small><i class="fa fa-thumbs-up"></i>赞 {{feed.post.ups.length}}</small></a>
-                                        </div>
-                                    </div>
-
-                                    <div ng-if="showComments(feed.post._id)">
-                                        <br>
-                                        <br>
-
-                                        <div class="col-md-10">
-                                            <textarea class="form-control text-sm" rows="1" ng-model="contents[feed.post._id]"></textarea>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-simple btn-info" ng-click="publishComment(feed.post._id)"><small>评论</small></button>
-                                        </div>
-                                        <br>
-                                        <br>
-                                        <br>
-                                        <hr>
-
-
-                                        <!--<div>-->
-                                            <!--<div ng-repeat="comment in feed.comments">-->
-                                                <!--<small>@{{comment.author}}: {{comment.content}}</small>-->
-                                                <!--<hr>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                        <div ng-repeat="comment in feed.post.comments">
-                                            <small class="col-lg-12">
-                                                <a>@{{comment.author}}</a> <span ng-if="comment.parent">回复<a>@{{comment.parentAuthor}}</a></span> : {{comment.content}}
-                                            </small>
-                                            <small class="col-lg-10">
-                                                <small>{{comment.createDate | amDateFormat:'MM月DD日 HH:mm:ss'}}</small>
-                                            </small>
-                                            <!-- todo a 标签的语义化 处理-->
-                                            <a class="col-lg-2 text-right" href="" ng-click="pullComments(comment._id)">
-                                                <small>回复</small>
-                                            </a>
-
-
-                                            <div ng-if="showComments(comment._id)">
-                                                <hr class="col-lg-11">
-                                                <div class="col-md-9">
-                                                    <textarea class="form-control text-sm" rows="1" ng-model="contents[comment._id]"></textarea>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <button class="btn btn-simple" ng-click="replyComment(feed.post._id, comment)"><small class="text-left">回复评论</small></button>
-                                                </div>
-
-                                            </div>
-
-                                            <hr class="col-lg-11">
-                                        </div>
-                                    </div>
-
-                                    <!-- comments view -->
-
-                                </div>
-                            </div>
-                            <hr>
-                        </li>
-
-                        <!-- ul -->
-
-                    </ul>
-                    <button class="btn btn-simple pull-right" ng-if="totalFeeds.length > 20">Next</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- repost modal -->
-        <script type="text/ng-template" id="repostModal">
-            <h4 class="text-center">转发微博</h4>
-            <p>@{{ngDialogData.author}}: {{ngDialogData.content}}</p>
-            <div class="row card">
-
-                <div class="header">
-                    <input class="col-md-9 form-control meduim-holder bg-blue" placeholder="请输入转发理由" ng-model="contents[ngDialogData._id+'repost']">
-                    <button class="col-md-offset-1 col-md-2 btn" ng-click="repost(ngDialogData._id, ngDialogId)"><small>转发</small></button>
-                    <br>
-                    <br>
-                </div>
-
-            </div>
-        </script>
+        </footer>
 
     </div>
+
+    <!--<a class="btn btn-sm btn-simple" ng-if="showFollowButton(feed.post.author)" ng-click="follow(feed.post.author)">关注</a>-->
+    <!--<a class="btn btn-sm btn-simple" ng-if="showUnFollowButton(feed.post.author)" ng-click="unFollow(feed.post.author)">取消关注</a>-->
+    <!--<button class="btn btn-simple pull-right" ng-if="totalFeeds.length > 20">Next</button>-->
+
+    <!-- 转发 modal -->
+    <script type="text/ng-template" id="repostModal">
+        <form class="repost-modal">
+            <h4 class="text-center">转发微博</h4>
+
+            <p>@{{ngDialogData.author}}: {{ngDialogData.content}}</p>
+            <input class="col-md-9 form-control meduim-holder bg-blue" placeholder="请输入转发理由"
+                   ng-model="contents[ngDialogData._id+'repost']">
+            <button class="col-md-offset-1 col-md-2 btn" ng-click="repost(ngDialogData._id, ngDialogId)">
+                <small>转发</small>
+            </button>
+        </form>
+    </script>
+
 </div>
 

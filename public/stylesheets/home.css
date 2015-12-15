@@ -1,0 +1,314 @@
+.weibo {
+    margin: 5% 0 0 0;
+}
+
+.weibo > main {
+    display: inline;
+    float: left;
+    margin: 0 0 0 10%;
+    width: 60%;
+}
+
+.weibo > aside {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.weibo > footer {
+    clear: both;
+}
+
+/* weibo ta */
+.weibo textarea {
+    display: inline;
+    resize: none;
+    overflow: hidden;
+}
+
+/* todo add red border to ta */
+
+.weibo a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #FA8072;
+}
+
+/* user-info card */
+.user-info-card {
+    margin: 0 0 0 2em;
+    text-align: center;
+    min-width: 20%;
+    max-width: 20em;
+}
+
+.user-info-card > header {
+    text-align: center;
+    padding-bottom: 2em;
+    background: #FFC0A0;
+    color: #FFFFFF;
+}
+
+.user-info-card > header > img {
+    display: inline-block;
+    margin: 2em 0 1em 0;
+    max-width: 6em;
+}
+
+
+.user-info-card > header > h4 {
+    margin: 0;
+}
+
+.user-info-card > footer {
+    padding: 0;
+    background: #F2F2F5;
+}
+
+.user-info-card ul {
+    margin: 0;
+    padding: 0;
+}
+
+.user-info-card li{
+    display: inline-block;
+    width: 30%;
+}
+
+/* publish box */
+.publish-box {
+    margin: 0 0 2em 0;
+}
+
+.publish-box > ul {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.publish-box  li {
+    display: inline;
+}
+
+.publish-box > button {
+    display: inline;
+    float: right;
+}
+
+.feed {
+    position: relative;
+    max-width: 100%;
+    min-width: 27em;
+    margin-bottom: 2em;
+    padding: 1em 0em 0em 0em ;
+    font-size: 1.25em;
+    background: #FFFFFF;
+    border-radius: 2px;
+    border: solid thin #DCDCDC;
+    cursor: default;
+    opacity: 0.95;
+    text-align: justify;
+    -moz-transform-origin: 50% 50%;
+    -webkit-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    -moz-transform: rotateX(0deg);
+    -webkit-transform: rotateX(0deg);
+    -ms-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+    -moz-transition: opacity 1s ease, -moz-transform 1s ease;
+    -webkit-transition: opacity 1s ease, -webkit-transform 1s ease;
+    -ms-transition: opacity 1s ease, -ms-transform 1s ease;
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.feed-main > aside{
+    display: inline;
+    float: left;
+    margin: 0em 0em 0em 0.5em;
+    width: 5em;
+}
+
+.feed-main > aside > img {
+    max-width: 3.5em;
+}
+
+.feed-main > article {
+    margin: 0em 0.75em 0.5em 0em;
+    overflow: hidden;
+}
+
+.feed-main > article > header {
+    margin-bottom: 0.25em;
+    font-weight: bold;
+}
+
+.feed-main > article > header > time {
+    margin-bottom: 0.25em;
+    font-size: 0.75em;
+    color: #888888;
+}
+
+.feed-main > article > header.menu-list {
+
+}
+
+.feed-main > footer{
+    margin-top: 0.5em;
+    border-top: solid thin #DCDCDC;
+    padding-top: 0.5em;
+    clear: both;
+}
+
+.feed-main > footer > ul{
+    margin: 0em 0em 0.5em 0em;
+    padding: 0;
+}
+
+.feed-main > footer  li {
+    display: inline-block;
+    width: 32%;
+    border: none;
+    border-left: solid thin #DCDCDC;
+    text-align: center;
+}
+
+.feed-main > footer  li:first-child {
+    border: none;
+}
+
+
+/* origin content */
+.feed-origin {
+    padding: 1em;
+    font-size: 0.75em;
+    background: #F2F2F5;
+}
+
+.feed-origin > header {
+    margin-bottom: 0.25em;
+    font-weight: bold;
+}
+
+.feed-origin > footer {
+    padding: 0.25em 0em;
+}
+
+.feed-origin > footer > time {
+    display: inline;
+    float: left;
+}
+
+.feed-origin > footer  li {
+    display: inline;
+    float: right;
+    border: none;
+    border-right: solid thin #DCDCDC;
+    padding: 0em 0.5em 0em 0.5em;
+}
+
+.feed-origin > footer  li:first-child {
+    border: none;
+}
+
+/* feed comments */
+.feed-comments-list {
+    background-color: #F2F2F5;
+    margin-bottom: 0;
+}
+
+.feed-comments-list > header {
+    padding: 1em 0.75em 0em 0.5em;
+}
+
+.feed-comments-list > header > img {
+    display: inline;
+    float: left;
+    margin: 0 2em 0 1em;
+    max-width: 2em;
+}
+
+.feed-comments-list > header > textarea {
+    width: 75%;
+    font-size: 0.75em;
+    max-lines: 1;
+}
+
+.feed-comments-list > header > button {
+    display: inline;
+    float: right;
+}
+
+.feed-comments-list > section {
+    margin: 0.5em 0.75em 0 5.5em;
+}
+
+/*  comment box  */
+.feed-comment-box {
+    padding: 0.5em 1em 0 0;
+    border-top: solid thin #DCDCDC;
+    background-color: #F2F2F5;
+}
+
+.feed-comment-box > aside{
+    display: inline;
+    float: left;
+}
+
+.feed-comment-box > aside > img {
+    max-width: 2em;
+}
+
+.feed-comment-box > article {
+    /* todo */
+    margin: 0 0 0 4em;
+    overflow: hidden;
+}
+
+
+/* comment content and handle bar */
+.feed-comment {
+    font-size: 0.75em;
+}
+
+.feed-comment > time {
+    display: inline;
+}
+
+.feed-comment > ul {
+    display: inline;
+    float: right;
+    margin: 0 0 0.5em 0;
+    padding: 0;
+
+}
+
+.feed-comment li {
+    display: inline;
+    margin: 0;
+    border: none;
+    border-left: solid thin #DCDCDC;
+    padding: 0 0 0 0.5em;
+}
+
+.feed-comment li:first-child {
+    border: none;
+}
+
+.feed-comment > section {
+    clear: both;
+}
+
+.feed-comment > section > textarea {
+    display: inline;
+    width: 85%;
+}
+
+.feed-comment > section > button {
+    display: inline;
+    float: right;
+    margin: 0;
+}
+
+
+/*repost  modal*/
+
