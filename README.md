@@ -2,8 +2,6 @@
 
 This is a simple demo app like weibo(a twitter like web app) with angularJs as font-end and express as back-end.
 
-Maybe fucking ugly...
-
 这是一个简单的仿微博应用, 实践了一把MEAN开发, 即数据库用MongoDB, 服务器端框架用Express, 前端MVVM用AngularJs, 这一切都基于NodeJs.
 
 #  Node & Express
