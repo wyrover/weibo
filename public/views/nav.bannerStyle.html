@@ -1,22 +1,18 @@
-<nav class="navbar navbar-relative navbar-ct-transparent" id="register-navbar">
+<nav class="wb-nav">
     <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" ui-sref="home">Weibo</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navigation-example-2">
-            <ul class="nav navbar-nav navbar-right">
-                <a ui-sref="searchUser" class="btn btn-simple" ><i class="fa fa-search"></i></a>
-                <a href="#" target="_blank" class="btn btn-simple"><i class="fa fa-gear"></i></a>
-                <a ui-sref="signIn" class="btn btn-simple"><i class="fa fa-sign-out"></i></a>
-            </ul>
-        </div>
+        <h1>Weibo</h1>
+        <ul>
+            <li>
+                <a ui-sref="searchUser"><i class="fa fa-search"></i></a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-gear"></i></a>
+            </li>
+            <li>
+                <a ui-sref="signIn"><i class="fa fa-sign-out"></i></a>
+            </li>
+        </ul>
     </div>
 </nav>
 
-<div class="wrapper">
-    <div class="profile-background">
-        <div class="filter-black"></div>
-    </div>
-    <div ui-view></div>
-</div>
+<div ui-view></div>

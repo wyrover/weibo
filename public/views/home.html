@@ -4,7 +4,7 @@
         <main>
             <!--   发微博框   -->
             <header class="publish-box">
-                <textarea class="form-control" ng-model="contents.mainPost"></textarea>
+                <textarea class="form-control" maxlength="140" rows="4" ng-model="contents.mainPost"></textarea>
 
                 <ul>
                     <li>
@@ -85,7 +85,7 @@
                     <!-- 评论框 -->
                     <header>
                         <img src="../images/examples/flume.jpg" class="img-responsive">
-                        <textarea maxlength="140" ng-model="contents[feed.post._id]"></textarea>
+                        <textarea maxlength="140" rows="1" ng-model="contents[feed.post._id]"></textarea>
                         <button class="btn btn-danger" ng-click="publishComment(feed.post._id)">评论</button>
                     </header>
 
@@ -112,7 +112,7 @@
 
                             <!-- 回复框 -->
                             <section ng-if="showComments(comment._id)">
-                                <textarea ng-model="contents[comment._id]"></textarea>
+                                <textarea maxlength="140" rows="1" ng-model="contents[comment._id]"></textarea>
                                 <button class="btn btn-danger" ng-click="replyComment(feed.post._id, comment)">评论
                                 </button>
                             </section>
@@ -157,8 +157,8 @@
         <footer>
 
         </footer>
-
     </div>
+
 
     <!--<a class="btn btn-sm btn-simple" ng-if="showFollowButton(feed.post.author)" ng-click="follow(feed.post.author)">关注</a>-->
     <!--<a class="btn btn-sm btn-simple" ng-if="showUnFollowButton(feed.post.author)" ng-click="unFollow(feed.post.author)">取消关注</a>-->
@@ -166,13 +166,11 @@
 
     <!-- 转发 modal -->
     <script type="text/ng-template" id="repostModal">
-        <form class="repost-modal">
-            <h4 class="text-center">转发微博</h4>
-
-            <p>@{{ngDialogData.author}}: {{ngDialogData.content}}</p>
-            <input class="col-md-9 form-control meduim-holder bg-blue" placeholder="请输入转发理由"
-                   ng-model="contents[ngDialogData._id+'repost']">
-            <button class="col-md-offset-1 col-md-2 btn" ng-click="repost(ngDialogData._id, ngDialogId)">
+        <form class="weibo repost-modal">
+            <h3>转发微博</h3>
+            <p class="repost-origin">@{{ngDialogData.author}}: {{ngDialogData.content}}</p>
+            <textarea class="form-control" maxlength="140" rows="4" placeholder="请输入转发理由" ng-model="contents[ngDialogData._id+'repost']"></textarea>
+            <button class="btn btn-danger" ng-click="repost(ngDialogData._id, ngDialogId)">
                 <small>转发</small>
             </button>
         </form>

@@ -1,8 +1,33 @@
-#register-navbar a{
-    color: #FFF;
+.wb-nav {
+    background-image: url('../images/home/banner-mountain.png');
+    background-position: center center;
+    background-size: cover;
+    height: 300px;
+    /*overflow: hidden;*/
+    width: 100%;
+    z-index: -1;
 }
 
-.navbar-relative{
-    position: relative;
-    z-index: 2;
+.wb-nav h1 {
+    display: inline;
+    float: left;
+    padding: 0;
+    color: #FFFFFF;
 }
+
+.wb-nav ul {
+    display: inline;
+    float: right;
+    margin: 2em 0 0 0;
+}
+
+.wb-nav li {
+    display: inline;
+    margin: 2em 0 0 2em;
+    font-size: 1.5em;
+}
+
+.wb-nav li a {
+    color: #FFFFFF;
+}
+

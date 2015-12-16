@@ -22,6 +22,7 @@
 .weibo textarea {
     display: inline;
     resize: none;
+    font-size: 1.25em;
     overflow: hidden;
 }
 
@@ -77,6 +78,10 @@
 /* publish box */
 .publish-box {
     margin: 0 0 2em 0;
+}
+
+.publish-box textarea {
+    font-size: 1.25em;
 }
 
 .publish-box > ul {
@@ -229,7 +234,6 @@
 
 .feed-comments-list > header > textarea {
     width: 75%;
-    font-size: 0.75em;
     max-lines: 1;
 }
 
@@ -311,4 +315,11 @@
 
 
 /*repost  modal*/
+.repost-modal {
+
+}
+
+.repost-origin {
+    background: #F2F2F5;
+}
 

@@ -4,6 +4,8 @@ This is a simple demo app like weibo(a twitter like web app) with angularJs as f
 
 这是一个简单的仿微博应用, 实践了一把MEAN开发, 即数据库用MongoDB, 服务器端框架用Express, 前端MVVM用AngularJs, 这一切都基于NodeJs.
 
+![2015-12-16_11-29-33.gif](https://ooo.0o0.ooo/2015/12/15/5670db3ed1a8a.gif)
+
 #  Node & Express
 > 这个repo的服务器端, 由于当初演示的需要, 所以即使发现到有实现得不好的地方, 依旧保持了原样. 而经过思考后重构的代码, 请看这个repo:  [**think-todo**](https://github.com/TinkGu/think-todo)
 
